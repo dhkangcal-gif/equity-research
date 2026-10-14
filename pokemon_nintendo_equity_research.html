@@ -1,0 +1,1537 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>포켓몬컴퍼니(TPC) 10개년 해부 & Visible Alpha 컨센서스 대조 심층 리서치</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @keyframes flowDash {
+      to { stroke-dashoffset: -24; }
+    }
+    @keyframes barGrow {
+      from { transform: scaleX(0); }
+      to { transform: scaleX(1); }
+    }
+    @keyframes barGrowY {
+      from { transform: scaleY(0); }
+      to { transform: scaleY(1); }
+    }
+    .animate-flow {
+      stroke-dasharray: 6 6;
+      animation: flowDash 1.2s linear infinite;
+    }
+    .animate-flow-fast {
+      stroke-dasharray: 8 6;
+      animation: flowDash 0.7s linear infinite;
+    }
+    .bar-fill {
+      transform-origin: left;
+      animation: barGrow 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .bar-fill-y {
+      transform-origin: bottom;
+      animation: barGrowY 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .node-card {
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+    }
+    .node-card:hover {
+      transform: translateY(-2px);
+    }
+    .node-card.active-node {
+      box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.28);
+    }
+    input[type="range"] {
+      accent-color: #3b82f6;
+    }
+  </style>
+</head>
+<body class="bg-[var(--background)] text-[var(--foreground)] antialiased p-4 md:p-8 space-y-8 max-w-7xl mx-auto">
+
+  <!-- Executive Header -->
+  <header class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 md:p-8 shadow-sm space-y-5">
+    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+      <div class="space-y-3 max-w-4xl">
+        <div class="inline-flex flex-wrap items-center gap-2 px-3 py-1 rounded-full bg-blue-500/15 text-blue-500 text-xs font-semibold">
+          <span>⚡ MUST-EMPIRE MCP × VISIBLE ALPHA (cid=16263) LIVE DATA</span>
+          <span>•</span>
+          <span>FY2017–FY2030E Deep Dive</span>
+        </div>
+        <h1 class="text-2xl md:text-3xl font-bold tracking-tight text-[var(--foreground)] leading-tight">
+          포켓몬 30주년 TCG 대열풍과 닌텐도 이익 구조의 재정의:<br class="hidden md:inline" />
+          10개년 시계열 해부 & Visible Alpha(VA) 컨센서스 괴리 분석
+        </h1>
+        <p class="text-sm text-[var(--muted-foreground)] leading-relaxed">
+          ① 지난 10년(FY17~FY26)간 <strong>TPC 일본 관보 순이익(×32%)과 닌텐도 실제 지분법이익 간의 구조적 괴리(해외법인 TPCi·아시아 및 크리처스 기여분)</strong>를 추적하고, ② <strong>머스트엠파이어 MCP(`va_api`)에서 추출한 닌텐도 본업 영업이익 컨센서스(FY20~FY30E)</strong> 위에 당사 포켓몬 지분법이익 추론치를 얹어 <strong>셀사이드(VA 컨센서스)가 놓치고 있는 연간 +380억~450억 엔 규모의 경상이익 서프라이즈(Blind Spot)</strong>를 규명했습니다.
+        </p>
+      </div>
+
+      <!-- Key Headline Metrics -->
+      <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 shrink-0 lg:w-88">
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-3.5">
+          <div class="text-xs text-[var(--muted-foreground)]">FY27E 본업 영업이익 (VA 컨센)</div>
+          <div class="text-xl font-bold text-[var(--foreground)] mt-0.5">4,406.1억 엔</div>
+          <div class="text-xs text-blue-500 font-semibold mt-0.5">회사 가이던스(3,700억) +19.1%</div>
+        </div>
+        <div class="bg-blue-500/10 border border-blue-500/40 rounded-xl p-3.5">
+          <div class="text-xs text-blue-500 font-semibold">FY27E 포켓몬 지분법 (당사 Base)</div>
+          <div class="text-xl font-bold text-blue-500 mt-0.5">1,140.0억 엔</div>
+          <div class="text-xs text-emerald-500 font-semibold mt-0.5">VA 내재치(~753억) 대비 +51.4%</div>
+        </div>
+        <div class="bg-amber-500/10 border border-amber-500/40 rounded-xl p-3.5">
+          <div class="text-xs text-amber-500 font-semibold">VA 본업 대비 지분법 비중</div>
+          <div class="text-xl font-bold text-amber-500 mt-0.5">25.9% <span class="text-xs font-normal">(FY27E)</span></div>
+          <div class="text-xs text-[var(--muted-foreground)] mt-0.5">본업 영업이익의 1/4 이상 창출</div>
+        </div>
+        <div class="bg-emerald-500/10 border border-emerald-500/40 rounded-xl p-3.5">
+          <div class="text-xs text-emerald-500 font-semibold">FY27E 경상이익 (당사 vs VA)</div>
+          <div class="text-xl font-bold text-emerald-500 mt-0.5">6,175억 <span class="text-xs font-normal">vs 5,793억</span></div>
+          <div class="text-xs text-emerald-500 font-semibold mt-0.5">VA 컨센 대비 +382억 엔 상회</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sticky Table of Contents (Quick Jump Bar - All Sections Expanded Below) -->
+  <nav class="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--border)] pb-3 sticky top-0 z-30 bg-[var(--background)]/95 backdrop-blur py-2.5">
+    <div class="flex flex-wrap items-center gap-1.5" id="main-tabs">
+      <span class="text-xs font-bold text-[var(--muted-foreground)] mr-1 px-1">📑 단락 바로가기:</span>
+      <button onclick="scrollToSection('sec-va')" id="tab-sec-va" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-sm transition">
+        1. 본업(VA) + 지분법 경상이익 & 컨센 괴리
+      </button>
+      <button onclick="scrollToSection('sec-timeseries')" id="tab-sec-timeseries" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] hover:border-blue-500 transition">
+        2. 10개년(FY17~27) 본사 vs 해외법인 시계열
+      </button>
+      <button onclick="scrollToSection('sec-global')" id="tab-sec-global" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] hover:border-blue-500 transition">
+        3. 글로벌 법인(TPCi·아시아) 연결 구조
+      </button>
+      <button onclick="scrollToSection('sec-segments')" id="tab-sec-segments" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] hover:border-blue-500 transition">
+        4. 사업부별 손익 & 유닛 이코노믹스
+      </button>
+      <button onclick="scrollToSection('sec-forecast')" id="tab-sec-forecast" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] hover:border-blue-500 transition">
+        5. 30주년 5대 선행지표 & 시뮬레이터
+      </button>
+    </div>
+    <span class="text-xs text-emerald-500 font-semibold hidden xl:inline-block shrink-0">
+      ✓ 전 단락 연속 펼침 뷰 (스크롤하여 전체 열람)
+    </span>
+  </nav>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 1: NINTENDO CORE OP (VA) + EQUITY METHOD = ORDINARY PROFIT    -->
+  <!-- ===================================================================== -->
+  <section id="sec-va" class="space-y-6 scroll-mt-20">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="border-b border-[var(--border)] pb-4 space-y-2">
+        <div class="text-xs font-bold text-blue-500 uppercase tracking-wider">PART 1. MUST-EMPIRE MCP × VISIBLE ALPHA CONSENSUS (cid=16263, 7974_JP)</div>
+        <h2 class="text-xl md:text-2xl font-bold text-[var(--foreground)]">
+          닌텐도 본업 영업이익(VA 컨센서스) + 포켓몬 지분법이익 = 경상이익 빌드업 차트 & 셀사이드의 맹점
+        </h2>
+        <p class="text-sm text-[var(--muted-foreground)] leading-relaxed">
+          머스트엠파이어 MCP를 통해 <strong>Visible Alpha(VA)의 닌텐도 최신 컨센서스(18개 증권사 커버리지, 2026.10.09 갱신)</strong>를 전수 추출했습니다. 아래 차트는 VA가 추정한 <strong>닌텐도 본업 영업이익(회색/남색 기둥)</strong> 위에 <strong>포켓몬 지분법 투자이익(파란색 기둥)</strong>과 <strong>기타 금융수익(초록색 기둥: 이자수익·환차익)</strong>을 쌓아 올려 <strong>총 경상이익(Ordinary Profit)</strong>을 그린 것입니다.
+        </p>
+      </div>
+
+      <!-- Vertical Stacked Bar Chart: FY2020 to FY2030E -->
+      <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-5">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base font-bold">📊 닌텐도 본업 영업이익 + 포켓몬 지분법이익 → 경상이익 구성 추이 및 전망 (FY2020 ~ FY2030E, 단위: 억 엔)</h3>
+            <p class="text-xs text-[var(--muted-foreground)] mt-0.5">
+              FY20~FY26은 확정 실적이며, FY27E~FY30E의 본업 영업이익은 <strong>VA 컨센서스</strong>, 지분법이익은 <strong>당사 바텀업 추정치(Base)</strong>를 적용해 VA 경상이익 컨센서스(점선 배지)와 비교했습니다.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-3 text-xs shrink-0">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-slate-500 inline-block"></span>① 닌텐도 본업 영업이익 (VA)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-blue-500 inline-block"></span>② 포켓몬 등 지분법이익 (당사)</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span>③ 기타 영업외(이자·환차익)</span>
+            <span class="flex items-center gap-1.5"><span class="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-500 font-bold">비중%</span>본업 영업이익 대비 지분법 비율</span>
+          </div>
+        </div>
+
+        <!-- Vertical Stacked Chart Container -->
+        <div class="grid grid-cols-11 gap-1.5 sm:gap-2.5 pt-6 pb-2 items-end h-80 border-b border-[var(--border)] px-1" id="va-vertical-chart">
+          <!-- Populated by JS -->
+        </div>
+        <div class="grid grid-cols-11 gap-1.5 sm:gap-2.5 text-center text-xs" id="va-vertical-labels">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <!-- Critical Alpha Discovery: Quarterly VA Consensus vs Reality (1QFY26 ~ 4QFY28E) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <div class="lg:col-span-7 bg-[var(--background)] border-2 border-amber-500/50 rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold px-2.5 py-1 rounded-md bg-amber-500/15 text-amber-500 uppercase">
+              🚨 핵심 발견 (Alpha Insight): 분기별 VA 컨센서스의 심각한 과소추정
+            </span>
+            <span class="text-xs text-[var(--muted-foreground)]">출처: VA `pid=11787743` (Quarterly)</span>
+          </div>
+          <h3 class="text-base font-bold text-[var(--foreground)]">
+            왜 VA 컨센서스는 FY27 영업외수익을 1,382억 엔으로 과소추정하고 있는가?
+          </h3>
+          <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            Visible Alpha의 분기별 컨센서스(`1QFY-2027` ~ `4QFY-2027`)를 뜯어보면 셀사이드 애널리스트들의 모델링 맹점이 적나라하게 드러납니다.
+          </p>
+          <ul class="space-y-2 text-xs text-[var(--muted-foreground)] leading-relaxed">
+            <li class="flex items-start gap-2">
+              <span class="text-amber-500 font-bold">1.</span>
+              <span><strong>1QFY27(4~6월) 이미 확정된 실적:</strong> 본업 영업이익 <strong>1,426.0억 엔</strong>에 순영업외수익 <strong>635.5억 엔</strong>(포켓몬 지분법 <strong>303.1억 엔</strong> + 환차익 168억 엔 + 이자수익 131억 엔)이 더해져 1Q 경상이익만 <strong>2,061.5억 엔</strong>을 달성했습니다.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-500 font-bold">2.</span>
+              <span><strong>2Q~4Q VA 컨센서스의 비현실적 급감 가정:</strong> 그런데 VA 컨센서스는 남은 2Q, 3Q, 4Q의 <strong>전체 순영업외수익(지분법 + 이자수익 합계)</strong>을 각각 <strong>258.9억 엔(2Q), 280.3억 엔(3Q), 257.0억 엔(4Q)</strong>으로 모델링해 두었습니다.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-amber-500 font-bold">3.</span>
+              <span><strong>이자수익을 빼면 지분법이익이 반토막?:</strong> 닌텐도의 보유 현금 이자수익만 분기당 <strong>약 120억 엔</strong>이 고정 유입됩니다. 즉, VA 컨센서스는 2Q~4Q 포켓몬 지분법이익이 <strong>분기당 140억~160억 엔(1Q 303.1억 엔 대비 -50% 반토막, 연간 합계 ~753억 엔)으로 급감</strong>한다고 가정한 것입니다!</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-emerald-500 font-bold">4.</span>
+              <span><strong>결론 (실제 30주년 임팩트 반영 시):</strong> 9월 16일 30주년 TCG(`30th CELEBRATION`) 전 세계 동시 발매로 2Q~4Q는 반토막이 아니라 오히려 연중 최대 성수기입니다. 당사 추론치(연간 지분법 <strong>1,140억 엔</strong>)를 대입하면 <strong>FY27 경상이익은 VA 컨센서스(5,792.8억 엔)를 +382.1억 엔(+6.6%) 상회하는 6,174.9억 엔</strong>에 도달합니다.</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Right 5 cols: Quarterly Comparison Table (VA vs Our Model) -->
+        <div class="lg:col-span-5 bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-3">
+          <div class="text-sm font-bold">📋 FY2027 분기별 손익: VA 컨센서스 vs 당사 추정 비교 (단위: 억 엔)</div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-[var(--border)] text-[var(--muted-foreground)]">
+                  <th class="py-2 px-2">분기</th>
+                  <th class="py-2 px-2 text-right">본업 영업익<br/>(VA 컨센)</th>
+                  <th class="py-2 px-2 text-right">순영업외<br/>(VA 컨센)</th>
+                  <th class="py-2 px-2 text-right text-amber-500">VA 내재<br/>지분법(추산)</th>
+                  <th class="py-2 px-2 text-right text-blue-500 font-bold">당사 추론<br/>지분법이익</th>
+                  <th class="py-2 px-2 text-right text-emerald-500 font-bold">당사 경상익<br/>(vs VA)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[var(--border)]">
+                <tr class="bg-blue-500/5">
+                  <td class="py-2 px-2 font-bold text-blue-500">1Q (확정)</td>
+                  <td class="py-2 px-2 text-right font-semibold">1,426.0</td>
+                  <td class="py-2 px-2 text-right font-semibold">635.5</td>
+                  <td class="py-2 px-2 text-right font-bold text-blue-500">303.1</td>
+                  <td class="py-2 px-2 text-right font-bold text-blue-500">303.1</td>
+                  <td class="py-2 px-2 text-right font-bold">2,061.5</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-medium">2QE (7~9월)</td>
+                  <td class="py-2 px-2 text-right">873.4</td>
+                  <td class="py-2 px-2 text-right">258.9</td>
+                  <td class="py-2 px-2 text-right text-amber-500">~140.0</td>
+                  <td class="py-2 px-2 text-right font-bold text-blue-500">265.0</td>
+                  <td class="py-2 px-2 text-right font-semibold text-emerald-500">1,256.4 <span class="text-[11px] block">(+147.2)</span></td>
+                </tr>
+                <tr class="bg-emerald-500/5">
+                  <td class="py-2 px-2 font-bold text-emerald-500">3QE (10~12월)</td>
+                  <td class="py-2 px-2 text-right">1,555.5</td>
+                  <td class="py-2 px-2 text-right">280.3</td>
+                  <td class="py-2 px-2 text-right text-amber-500">~160.0</td>
+                  <td class="py-2 px-2 text-right font-bold text-blue-500">340.0</td>
+                  <td class="py-2 px-2 text-right font-bold text-emerald-500">2,013.5 <span class="text-[11px] block">(+171.4)</span></td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-medium">4QE (1~3월)</td>
+                  <td class="py-2 px-2 text-right">638.2</td>
+                  <td class="py-2 px-2 text-right">257.0</td>
+                  <td class="py-2 px-2 text-right text-amber-500">~150.0</td>
+                  <td class="py-2 px-2 text-right font-bold text-blue-500">231.9</td>
+                  <td class="py-2 px-2 text-right font-semibold text-emerald-500">988.1 <span class="text-[11px] block">(+93.3)</span></td>
+                </tr>
+                <tr class="bg-blue-500/10 font-bold border-t-2 border-[var(--border)]">
+                  <td class="py-2.5 px-2">FY27 연간합계</td>
+                  <td class="py-2.5 px-2 text-right">4,406.1*</td>
+                  <td class="py-2.5 px-2 text-right">1,381.9*</td>
+                  <td class="py-2.5 px-2 text-right text-amber-500">~753.1</td>
+                  <td class="py-2.5 px-2 text-right text-blue-500 text-sm">1,140.0</td>
+                  <td class="py-2.5 px-2 text-right text-emerald-500 text-sm">6,174.9 <span class="text-xs block">(VA대비 +382.1)</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            * 주: VA 연간 컨센서스 합계(영업이익 4,406.1억 엔, 경상이익 5,792.8억 엔)는 개별 브로커들의 연간 추정치 평균이며, 당사 경상이익(6,174.9억 엔)은 VA 연간 본업 영업이익(4,406.1억 엔) + 당사 지분법이익(1,140.0억 엔) + 이자/기타 순영업외(628.8억 엔) 합산 기준입니다.
+          </div>
+        </div>
+      </div>
+
+      <!-- Full Master Comparison Table: VA Consensus vs Our Model (FY2020 ~ FY2030E) -->
+      <div class="pt-2">
+        <h3 class="text-base font-bold mb-3">📊 [Visible Alpha 전수 데이터] 닌텐도 본업 컨센서스 및 포켓몬 지분법이익 비중 변화 총괄표 (FY2020 ~ FY2030E, 단위: 억 엔)</h3>
+        <div class="overflow-x-auto border border-[var(--border)] rounded-xl">
+          <table class="w-full text-left border-collapse text-xs md:text-sm">
+            <thead>
+              <tr class="bg-[var(--background)] border-b border-[var(--border)] text-xs text-[var(--muted-foreground)]">
+                <th class="py-2.5 px-3">결산기 (3월 말)</th>
+                <th class="py-2.5 px-2.5 text-right">전사 매출액<br/>(VA 컨센)</th>
+                <th class="py-2.5 px-2.5 text-right">Switch 2 판매량<br/>/ 소프트 매출(VA)</th>
+                <th class="py-2.5 px-2.5 text-right font-bold text-[var(--foreground)]">본업 영업이익<br/>(A, VA 컨센)</th>
+                <th class="py-2.5 px-2.5 text-right text-amber-500">VA 순영업외<br/>컨센서스</th>
+                <th class="py-2.5 px-2.5 text-right text-blue-500 font-bold">포켓몬 지분법<br/>(B, 실적/당사)</th>
+                <th class="py-2.5 px-2.5 text-right text-amber-500 font-bold">본업 대비 비중<br/>(B / A)</th>
+                <th class="py-2.5 px-2.5 text-right">VA 경상이익<br/>컨센서스</th>
+                <th class="py-2.5 px-3 text-right text-emerald-500 font-bold">당사 경상이익<br/>(지분법 얹은 후)</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[var(--border)]">
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2020 (확정)</td>
+                <td class="py-2 px-2.5 text-right">13,085.2</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">소프트 5,928.8억</td>
+                <td class="py-2 px-2.5 text-right font-semibold">3,523.7</td>
+                <td class="py-2 px-2.5 text-right">80.9</td>
+                <td class="py-2 px-2.5 text-right font-bold text-blue-500">127.1</td>
+                <td class="py-2 px-2.5 text-right text-amber-500">3.6%</td>
+                <td class="py-2 px-2.5 text-right">3,604.6</td>
+                <td class="py-2 px-3 text-right font-semibold">3,604.6 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 3.5%)</span></td>
+              </tr>
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2021 (확정)</td>
+                <td class="py-2 px-2.5 text-right">17,589.1</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">소프트 7,980.7억</td>
+                <td class="py-2 px-2.5 text-right font-semibold">6,406.3</td>
+                <td class="py-2 px-2.5 text-right">383.6</td>
+                <td class="py-2 px-2.5 text-right font-bold text-blue-500">155.9</td>
+                <td class="py-2 px-2.5 text-right text-amber-500">2.4%</td>
+                <td class="py-2 px-2.5 text-right">6,790.0</td>
+                <td class="py-2 px-3 text-right font-semibold">6,790.0 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 2.3%)</span></td>
+              </tr>
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2022 (확정·25주년)</td>
+                <td class="py-2 px-2.5 text-right">16,953.4</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">소프트 8,389.3억</td>
+                <td class="py-2 px-2.5 text-right font-semibold">5,927.6</td>
+                <td class="py-2 px-2.5 text-right">780.5</td>
+                <td class="py-2 px-2.5 text-right font-bold text-blue-500">266.0</td>
+                <td class="py-2 px-2.5 text-right text-amber-500">4.5%</td>
+                <td class="py-2 px-2.5 text-right">6,708.1</td>
+                <td class="py-2 px-3 text-right font-semibold">6,708.1 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 4.0%)</span></td>
+              </tr>
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2023 (확정)</td>
+                <td class="py-2 px-2.5 text-right">16,016.8</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">소프트 8,321.1억</td>
+                <td class="py-2 px-2.5 text-right font-semibold">5,043.8</td>
+                <td class="py-2 px-2.5 text-right">967.0</td>
+                <td class="py-2 px-2.5 text-right font-bold text-blue-500">266.0</td>
+                <td class="py-2 px-2.5 text-right text-amber-500">5.3%</td>
+                <td class="py-2 px-2.5 text-right">6,010.7</td>
+                <td class="py-2 px-3 text-right font-semibold">6,010.7 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 4.4%)</span></td>
+              </tr>
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2024 (확정)</td>
+                <td class="py-2 px-2.5 text-right">16,718.7</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">소프트 8,842.5억</td>
+                <td class="py-2 px-2.5 text-right font-semibold">5,289.4</td>
+                <td class="py-2 px-2.5 text-right">1,515.6</td>
+                <td class="py-2 px-2.5 text-right font-bold text-blue-500">301.0</td>
+                <td class="py-2 px-2.5 text-right text-amber-500">5.7%</td>
+                <td class="py-2 px-2.5 text-right">6,805.0</td>
+                <td class="py-2 px-3 text-right font-semibold">6,805.0 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 4.4%)</span></td>
+              </tr>
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2025 (확정)</td>
+                <td class="py-2 px-2.5 text-right">11,649.2</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">소프트 6,030.3억</td>
+                <td class="py-2 px-2.5 text-right font-semibold">2,825.5</td>
+                <td class="py-2 px-2.5 text-right">897.6</td>
+                <td class="py-2 px-2.5 text-right font-bold text-blue-500">351.3</td>
+                <td class="py-2 px-2.5 text-right font-bold text-amber-500">12.4%</td>
+                <td class="py-2 px-2.5 text-right">3,723.2</td>
+                <td class="py-2 px-3 text-right font-semibold">3,723.2 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 9.4%)</span></td>
+              </tr>
+              <tr class="bg-blue-500/10 font-semibold">
+                <td class="py-2.5 px-3 text-blue-500">FY2026 (확정·Switch2)</td>
+                <td class="py-2.5 px-2.5 text-right">23,130.5</td>
+                <td class="py-2.5 px-2.5 text-right text-xs">1,986만대 / 7,459.9억</td>
+                <td class="py-2.5 px-2.5 text-right font-bold">3,601.2</td>
+                <td class="py-2.5 px-2.5 text-right">1,820.8</td>
+                <td class="py-2.5 px-2.5 text-right font-bold text-blue-500 text-base">827.9</td>
+                <td class="py-2.5 px-2.5 text-right font-bold text-amber-500 text-base">23.0%</td>
+                <td class="py-2.5 px-2.5 text-right">5,422.0</td>
+                <td class="py-2.5 px-3 text-right font-bold text-blue-500">5,422.0 <span class="text-xs">(지분비중 15.3%)</span></td>
+              </tr>
+              <tr class="bg-emerald-500/10 font-bold border-t-2 border-emerald-500/50">
+                <td class="py-2.5 px-3 text-emerald-500">FY2027E (30주년 TCG)</td>
+                <td class="py-2.5 px-2.5 text-right">22,606.0</td>
+                <td class="py-2.5 px-2.5 text-right text-xs">1,684만대 / 8,353.2억</td>
+                <td class="py-2.5 px-2.5 text-right">4,406.1</td>
+                <td class="py-2.5 px-2.5 text-right text-amber-500">1,381.9</td>
+                <td class="py-2.5 px-2.5 text-right text-blue-500 text-base">1,140.0</td>
+                <td class="py-2.5 px-2.5 text-right text-amber-500 text-base">25.9%</td>
+                <td class="py-2.5 px-2.5 text-right">5,792.8</td>
+                <td class="py-2.5 px-3 text-right text-emerald-500 text-base">6,174.9 <span class="text-xs block">(VA +382.1억 / 지분 18.5%)</span></td>
+              </tr>
+              <tr class="bg-emerald-500/5 font-semibold">
+                <td class="py-2.5 px-3 text-emerald-400">FY2028E (10세대 신작)</td>
+                <td class="py-2.5 px-2.5 text-right">24,745.7</td>
+                <td class="py-2.5 px-2.5 text-right text-xs">1,840만대 / 9,536.2억</td>
+                <td class="py-2.5 px-2.5 text-right">4,740.7</td>
+                <td class="py-2.5 px-2.5 text-right text-amber-500">1,371.3</td>
+                <td class="py-2.5 px-2.5 text-right text-blue-500 text-base">1,180.0</td>
+                <td class="py-2.5 px-2.5 text-right text-amber-500 text-base">24.9%</td>
+                <td class="py-2.5 px-2.5 text-right">5,984.0</td>
+                <td class="py-2.5 px-3 text-right text-emerald-500 text-base">6,440.7 <span class="text-xs block">(VA +456.7억 / 지분 18.3%)</span></td>
+              </tr>
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2029E (VA 컨센)</td>
+                <td class="py-2 px-2.5 text-right">25,330.8</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">1,875만대 / 10,191.3억</td>
+                <td class="py-2 px-2.5 text-right">5,647.7</td>
+                <td class="py-2 px-2.5 text-right">1,377.6</td>
+                <td class="py-2 px-2.5 text-right font-semibold text-blue-500">~1,150.0</td>
+                <td class="py-2 px-2.5 text-right text-amber-500">20.4%</td>
+                <td class="py-2 px-2.5 text-right">6,956.0</td>
+                <td class="py-2 px-3 text-right font-semibold text-emerald-500">7,317.7 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 15.7%)</span></td>
+              </tr>
+              <tr class="hover:bg-[var(--background)]/50">
+                <td class="py-2 px-3 font-medium">FY2030E (VA 컨센)</td>
+                <td class="py-2 px-2.5 text-right">25,267.6</td>
+                <td class="py-2 px-2.5 text-right text-xs text-[var(--muted-foreground)]">1,709만대 / 11,080.0억</td>
+                <td class="py-2 px-2.5 text-right">5,935.9</td>
+                <td class="py-2 px-2.5 text-right">1,579.1</td>
+                <td class="py-2 px-2.5 text-right font-semibold text-blue-500">~1,220.0</td>
+                <td class="py-2 px-2.5 text-right text-amber-500">20.6%</td>
+                <td class="py-2 px-2.5 text-right">7,515.0</td>
+                <td class="py-2 px-3 text-right font-semibold text-emerald-500">7,675.9 <span class="text-xs text-[var(--muted-foreground)]">(지분비중 15.9%)</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 2: 10-YEAR TIME SERIES & RESIDUAL DECOMPOSITION               -->
+  <!-- ===================================================================== -->
+  <section id="sec-timeseries" class="space-y-6 scroll-mt-20">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="border-b border-[var(--border)] pb-4 space-y-2">
+        <div class="text-xs font-bold text-amber-500 uppercase tracking-wider">PART 2. 10-YEAR TIME SERIES RECONCILIATION (FY2017–FY2027 1Q)</div>
+        <h2 class="text-xl md:text-2xl font-bold text-[var(--foreground)]">
+          10개년 시계열 정밀 점검: [TPC 본사 순이익 × 32%] vs [닌텐도 실제 지분법이익]의 구조적 괴리 추적
+        </h2>
+        <p class="text-sm text-[var(--muted-foreground)] leading-relaxed">
+          일본 관보에 공시되는 TPC 본사 단독(単体) 순이익의 32%와 닌텐도가 실제 계상한 지분법 투자이익 간의 <strong>10개년 시계열 괴리(Residual)</strong>를 분해한 결과입니다. 해외 자회사(TPCi)의 설비 투자 사이클과 연결 회계 시차에 따른 <strong>4단계 진화 과정(Phase 1~4)</strong>이 확인됩니다.
+        </p>
+      </div>
+
+      <!-- Interactive Chart: 10-Year Stacked Decomposition of Nintendo Equity Method Profit -->
+      <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-2">
+          <div>
+            <h3 class="text-base font-bold">📈 닌텐도 실제 지분법 투자이익의 원천 분해 시계열 (FY2017 ~ FY2028E, 단위: 억 엔)</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">
+              닌텐도 실제 지분법이익 = ① TPC 일본 본사 단독 순이익의 32%(황색) + ② 해외법인(TPCi·아시아)·크리처스 및 연결조정 잔차(보라색)
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-4 text-xs shrink-0">
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-amber-500 inline-block"></span>① TPC 일본 본사 32% 몫</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-purple-500 inline-block"></span>② 해외법인(TPCi 등)·크리처스 잔차</span>
+            <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-sm bg-emerald-500 inline-block"></span>VA 본업 영업이익 대비 비중(%)</span>
+          </div>
+        </div>
+
+        <div class="space-y-2.5 pt-2" id="ts-decomposition-bars"></div>
+      </div>
+
+      <!-- 4 Structural Phases Analysis Cards -->
+      <div class="space-y-3">
+        <h3 class="text-base font-bold">🔍 10개년 시계열이 밝혀낸 4단계 구조적 변화 (왜 배수가 줄었다가 FY26에 폭발했는가?)</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-500/15 text-blue-500">Phase 1 · FY17~FY18</span>
+              <span class="text-xs font-bold text-[var(--muted-foreground)]">배수 3.97x~4.41x</span>
+            </div>
+            <div class="text-sm font-bold">20주년 & 포켓몬 GO 서구권 쇼크</div>
+            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+              2016년 7월 출시된 `Pokémon GO`와 20주년 TCG 열풍이 북미·유럽을 강타했습니다. 당시 일본 본사 순이익은 159억 엔(32% = 51억 엔)이었으나, 서구권 라이선스를 총괄하는 <strong>TPCi와 나이언틱(Niantic) 관련 지분법 이익</strong>이 대거 유입되며 닌텐도 지분법이익은 본사 지분몫의 4배인 <strong>202.3억 엔</strong>을 기록했습니다.
+            </p>
+          </div>
+
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-500">Phase 2 · FY19~FY21</span>
+              <span class="text-xs font-bold text-[var(--muted-foreground)]">배수 2.58x~3.02x</span>
+            </div>
+            <div class="text-sm font-bold">스위치 1 본가 안착 & TCG 태동기</div>
+            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+              `소드·실드` 출시와 함께 콘솔 생태계가 안정화되고, 코로나19 직후 글로벌 실물 카드 수집 붐이 시작된 시기입니다. TPC 본사 순이익의 32%(43억~60억 엔)에 해외법인(TPCi) 이익 기여분(+78억~96억 엔)이 꾸준히 더해지며 연간 <strong>127억~156억 엔</strong>의 안정적 지분법이익을 창출했습니다.
+            </p>
+          </div>
+
+          <div class="bg-[var(--background)] border border-amber-500/50 rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-500/15 text-amber-500">Phase 3 · FY22~FY25</span>
+              <span class="text-xs font-bold text-amber-500">배수 1.50x~2.01x (압축)</span>
+            </div>
+            <div class="text-sm font-bold">25주년 폭발 & 해외 인쇄소 M&A·CAPEX 투자기</div>
+            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+              <strong>[핵심 시계열 인사이트]</strong> FY22~25 동안 TPC 본사 순이익은 414억 → 703억 엔으로 급증했으나, 닌텐도 지분법이익은 266억 → 351억 엔으로 배수가 일시 축소되었습니다. 이는 ① <strong>TPCi가 2022년 미국 최대 카드 인쇄사(Millennium Print Group)를 인수하고 북미·유럽 생산라인을 증설하는 대규모 CAPEX·상각비를 집행</strong>했고, ② 급증한 글로벌 재고 이동에 따른 <strong>연결 내부거래 미실현이익 차감</strong>이 발생했기 때문입니다.
+            </p>
+          </div>
+
+          <div class="bg-emerald-500/5 border-2 border-emerald-500/60 rounded-xl p-4 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-500">Phase 4 · FY26~현재</span>
+              <span class="text-xs font-bold text-emerald-500">배수 2.15x+ (대폭발)</span>
+            </div>
+            <div class="text-sm font-bold">수직계열화 회수기 + 모바일·30주년 슈퍼사이클</div>
+            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+              설비 증설 투자가 완료된 TPCi에서 연간 100억 장 카드의 인쇄 마진이 본격 회수되고, 라이선스 소매 매출이 $15.7B로 폭증했습니다. 여기에 2024년 10월 출시된 `포케포케`의 온기 이익과 내부거래 이익 환입이 겹치며 <strong>FY26 지분법이익이 827.9억 엔(+135.7%)으로 폭증</strong>했고, <strong>FY27 1Q에는 단 1분기 만에 303.1억 엔</strong>을 기록했습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 3: GLOBAL SUBSIDIARIES & CONSOLIDATION ARCHITECTURE           -->
+  <!-- ===================================================================== -->
+  <section id="sec-global" class="space-y-6 scroll-mt-20">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="border-b border-[var(--border)] pb-4 space-y-2">
+        <div class="text-xs font-bold text-purple-500 uppercase tracking-wider">PART 3. OVERSEAS SUBSIDIARIES & CONSOLIDATION STRUCTURE</div>
+        <h2 class="text-xl md:text-2xl font-bold text-[var(--foreground)]">
+          잔차(+443.7억 엔)의 실체: 해외법인(TPCi·포켓몬코리아·상하이) 및 크리처스 수익 구조 해부
+        </h2>
+        <p class="text-sm text-[var(--muted-foreground)] leading-relaxed">
+          FY2026 기준 일본 본사 지분몫(384.2억 엔)을 초과하는 <strong>+443.7억 엔의 추가 지분법이익</strong>이 어디서 발생했는지 법인별 공시 자료(License Global 리포트, 영국 Companies House, 한국 감사보고서)를 통해 역산한 연결 구조도입니다. 각 법인 카드를 클릭하면 상세 분석이 우측에 표시됩니다.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left 7 cols: Interactive Flow Diagram -->
+        <div class="lg:col-span-7 bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+          <div class="text-xs font-semibold uppercase tracking-wider text-[var(--muted-foreground)] flex items-center justify-between">
+            <span>글로벌 포켓몬 법인별 순이익 및 닌텐도 연결 지분법 귀속 흐름 (FY2026 확정 기준)</span>
+            <span class="text-blue-500">● 노드 클릭 시 상세 데이터 조회</span>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div onclick="selectEntity('tpc_jp')" id="node-tpc_jp" class="node-card active-node bg-[var(--card)] border-2 border-blue-500 rounded-xl p-3.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-amber-500">🇯🇵 TPC 일본 본사</span>
+                <span class="text-xs px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-500 font-semibold">단독 공시</span>
+              </div>
+              <div class="text-base font-bold mt-1.5">순익 1,200.6억 엔</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">매출 5,314억 / 영업익 1,440억</div>
+              <div class="text-xs text-blue-500 font-semibold mt-1.5">닌텐도 32% 몫: 384.2억 엔</div>
+            </div>
+
+            <div onclick="selectEntity('tpci')" id="node-tpci" class="node-card bg-[var(--card)] border border-[var(--border)] rounded-xl p-3.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-purple-500">🌎 TPCi (미·유럽 총괄)</span>
+                <span class="text-xs px-1.5 py-0.5 rounded bg-purple-500/15 text-purple-500 font-semibold">100% 자회사</span>
+              </div>
+              <div class="text-base font-bold mt-1.5">순익 ~1,080.0억 엔</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">소매 $15.7B / 직영매출 ~5,100억</div>
+              <div class="text-xs text-purple-500 font-semibold mt-1.5">닌텐도 32% 몫: ~345.6억 엔</div>
+            </div>
+
+            <div onclick="selectEntity('asia')" id="node-asia" class="node-card bg-[var(--card)] border border-[var(--border)] rounded-xl p-3.5">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-cyan-500">🇰🇷🇨🇳 한국·상하이·아시아</span>
+                <span class="text-xs px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-500 font-semibold">100% 자회사</span>
+              </div>
+              <div class="text-base font-bold mt-1.5">순익 ~160.2억 엔</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">한국 매출 733억 원 + 중국 간체자</div>
+              <div class="text-xs text-cyan-500 font-semibold mt-1.5">닌텐도 32% 몫: ~51.3억 엔</div>
+            </div>
+          </div>
+
+          <div class="w-full h-10 flex items-center justify-center">
+            <svg class="w-full h-full" viewBox="0 0 600 40" fill="none">
+              <path d="M100 2 L100 20 L300 20 L300 38" stroke="#f59e0b" stroke-width="2.5" class="animate-flow" />
+              <path d="M300 2 L300 38" stroke="#a855f7" stroke-width="2.5" class="animate-flow-fast" />
+              <path d="M500 2 L500 20 L300 20 L300 38" stroke="#06b6d4" stroke-width="2.5" class="animate-flow" />
+              <circle cx="300" cy="20" r="4" fill="#3b82f6" />
+            </svg>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div onclick="selectEntity('tpc_cons')" id="node-tpc_cons" class="sm:col-span-2 node-card bg-[var(--card)] border border-blue-500/50 rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-blue-500">🏢 TPC 글로벌 연결 순이익 (내부배당·미실현이익 조정 후)</span>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-500 font-semibold">의결권 32%</span>
+              </div>
+              <div class="flex items-baseline justify-between mt-2">
+                <div>
+                  <div class="text-lg font-bold">연결 순이익 약 2,320억 엔</div>
+                  <div class="text-xs text-[var(--muted-foreground)]">본사 1,200.6억 + 해외 1,240.2억 - 내부조정 120.8억</div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-[var(--muted-foreground)]">닌텐도 귀속분</div>
+                  <div class="text-base font-bold text-blue-500">742.4억 엔</div>
+                </div>
+              </div>
+            </div>
+
+            <div onclick="selectEntity('creatures')" id="node-creatures" class="node-card bg-[var(--card)] border border-[var(--border)] rounded-xl p-4">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-bold text-emerald-500">🃏 크리처스 & 관계사</span>
+                <span class="text-xs px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-semibold">별도 지분법</span>
+              </div>
+              <div class="text-base font-bold mt-2">귀속분 ~85.5억 엔</div>
+              <div class="text-xs text-[var(--muted-foreground)] mt-0.5">TCG 원작·개발 로열티 및 크리처스 보유 지분 효과</div>
+            </div>
+          </div>
+
+          <div class="w-full h-10 flex items-center justify-center">
+            <svg class="w-full h-full" viewBox="0 0 600 40" fill="none">
+              <path d="M200 2 L200 20 L300 20 L300 38" stroke="#3b82f6" stroke-width="3" class="animate-flow-fast" />
+              <path d="M490 2 L490 20 L300 20 L300 38" stroke="#10b981" stroke-width="2.5" class="animate-flow" />
+              <polygon points="295,33 305,33 300,39" fill="#3b82f6" />
+            </svg>
+          </div>
+
+          <div onclick="selectEntity('nintendo')" id="node-nintendo" class="node-card bg-gradient-to-r from-blue-600/15 via-indigo-600/10 to-emerald-600/15 border border-blue-500 rounded-xl p-4">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div>
+                <div class="text-xs font-bold text-blue-500">🎮 닌텐도 연결 재무제표 「지분법 투자이익」 최종 합산</div>
+                <div class="text-base font-bold mt-0.5">
+                  742.4억 엔 (TPC 글로벌 연결 32%) + 85.5억 엔 (크리처스 등) = <span class="text-blue-500 underline">827.9억 엔 (FY26 확정)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right 5 cols: Entity Detail View -->
+        <div class="lg:col-span-5 bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4" id="entity-detail-panel"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 4: SEGMENT BREAKDOWN & UNIT ECONOMICS                         -->
+  <!-- ===================================================================== -->
+  <section id="sec-segments" class="space-y-6 scroll-mt-20">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--border)] pb-4">
+        <div class="space-y-1">
+          <div class="text-xs font-bold text-amber-500 uppercase tracking-wider">PART 4. REVENUE & MARGIN ARCHITECTURE BY SEGMENT</div>
+          <h2 class="text-xl md:text-2xl font-bold text-[var(--foreground)]">
+            포켓몬컴퍼니 4대 사업부 손익 분해 및 유닛 이코노믹스 (Unit Economics)
+          </h2>
+          <p class="text-sm text-[var(--muted-foreground)]">
+            글로벌 연결 매출(약 1조 500억 엔)과 영업이익(약 2,950억 엔)이 어떤 마진 구조로 창출되는지 세그먼트별로 쪼개어 분석했습니다.
+          </p>
+        </div>
+        <div class="flex items-center gap-2 bg-[var(--background)] p-1.5 rounded-xl border border-[var(--border)] shrink-0">
+          <button onclick="setSegmentScope('consolidated')" id="btn-scope-cons" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition">
+            글로벌 연결 기준 (~1.05조 엔)
+          </button>
+          <button onclick="setSegmentScope('standalone')" id="btn-scope-stand" class="px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition">
+            일본 본사 단독 (5,314억 엔)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold" id="seg-rev-title">글로벌 연결 매출액 구성 (약 1조 500억 엔)</span>
+            <span class="text-xs text-[var(--muted-foreground)]">FY2026 기준</span>
+          </div>
+          <div class="w-full h-10 rounded-xl overflow-hidden flex shadow-inner" id="seg-rev-bar"></div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1" id="seg-rev-legend"></div>
+        </div>
+
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold" id="seg-op-title">글로벌 연결 영업이익 구성 (약 2,950억 엔, OPM 28.1%)</span>
+            <span class="text-xs text-emerald-500 font-semibold">실물+디지털 TCG가 이익의 74.6% 창출</span>
+          </div>
+          <div class="w-full h-10 rounded-xl overflow-hidden flex shadow-inner" id="seg-op-bar"></div>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1" id="seg-op-legend"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5" id="segment-cards-container"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-2">
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-3">
+          <div class="text-sm font-bold text-amber-500">📦 [유닛 이코노믹스 ①] 실물 TCG 100억 장의 수익 창출 공식</div>
+          <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            2026년 3월 말 기준 포켓몬 카드 누적 발행량은 <strong>850억 장</strong>이며, 이 중 <strong>60%인 약 510억 장이 2021년 이후 최근 5년 동안 인쇄</strong>되었습니다.
+          </p>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+              <span class="text-[var(--muted-foreground)]">연간 글로벌 인쇄량 (FY24~26 평균)</span>
+              <span class="font-bold">연 100억 ~ 119억 장 (약 12억~15억 팩)</span>
+            </div>
+            <div class="flex justify-between p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+              <span class="text-[var(--muted-foreground)]">지역별 소매 단가(MSRP) 차이</span>
+              <span class="font-bold">일본 180~550엔/팩 vs 북미 $4.49~$5.99/팩 (약 700~900엔)</span>
+            </div>
+            <div class="flex justify-between p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+              <span class="text-[var(--muted-foreground)]">제조원가율 (용지·특수호일·인쇄·포장)</span>
+              <span class="font-bold text-emerald-500">도매 출하가의 약 18~22% (Millennium 인수로 절감)</span>
+            </div>
+            <div class="flex justify-between p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/30">
+              <span class="font-semibold text-amber-500">재판(Reprint) 시 한계 영업이익률</span>
+              <span class="font-bold text-amber-500">40% ~ 45% (기획·일러스트 고정비 기상각)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-3">
+          <div class="text-sm font-bold text-blue-500">📱 [유닛 이코노믹스 ②] `포켓몬 TCG Pocket` 과금 배분 워터폴 (Waterfall)</div>
+          <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+            Sensor Tower 및 AppMagic 집계 기준 `포케포케`는 첫 1년 총매출 $1.3B, 2026년 중반 누적 <strong>$1.6B(약 2,450억 엔)</strong>를 돌파했습니다. 공동개발사 DeNA의 공시 실적(게임사업부 매출 644억~781억 엔, 세그먼트 이익 297억~386억 엔)과 대조하면 TPC 귀속 이익이 정확히 역산됩니다.
+          </p>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+              <span class="text-[var(--muted-foreground)]">① 유저 총과금액 (Gross Bookings, 연간 기준)</span>
+              <span class="font-bold">100% (예: 연 $1.0B ≈ 1,550억 엔 기준)</span>
+            </div>
+            <div class="flex justify-between p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+              <span class="text-[var(--muted-foreground)]">② 애플 App Store / 구글 Play 수수료 차감</span>
+              <span class="font-bold text-rose-400">-30% (약 -465억 엔) → 순매출 1,085억 엔</span>
+            </div>
+            <div class="flex justify-between p-2.5 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+              <span class="text-[var(--muted-foreground)]">③ 공동개발사 DeNA 배분 (서버·운영·개발 몫)</span>
+              <span class="font-bold text-[var(--muted-foreground)]">순매출의 약 25~28% (DeNA 세그먼트 이익 ~300억 엔 부합)</span>
+            </div>
+            <div class="flex justify-between p-2.5 rounded-lg bg-blue-500/10 border border-blue-500/30">
+              <span class="font-semibold text-blue-500">④ TPC & 크리처스 순유입 몫 (마케팅 차감 후 영업이익)</span>
+              <span class="font-bold text-blue-500">연간 약 550억 ~ 650억 엔 (한계 OPM 60%+)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 5: 30TH ANNIVERSARY INDICATORS & INTERACTIVE SIMULATOR        -->
+  <!-- ===================================================================== -->
+  <section id="sec-forecast" class="space-y-6 scroll-mt-20">
+    <div class="bg-[var(--card)] border border-[var(--border)] rounded-2xl p-6 shadow-sm space-y-6">
+      <div class="border-b border-[var(--border)] pb-4 space-y-2">
+        <div class="text-xs font-bold text-emerald-500 uppercase tracking-wider">PART 5. 30TH ANNIVERSARY INDICATORS & INTERACTIVE SIMULATOR</div>
+        <h2 class="text-xl md:text-2xl font-bold text-[var(--foreground)]">
+          30주년 임팩트 5대 선행지표 검증 및 VA 컨센서스 연동 시뮬레이터
+        </h2>
+        <p class="text-sm text-[var(--muted-foreground)] leading-relaxed">
+          역대 주년(20주년·25주년) 실적 점프율 벤치마크와 30주년 P·Q·M·디지털 지표를 정리하고, 하단 슬라이더를 통해 <strong>VA 본업 영업이익 컨센서스(4,406.1억 엔) 대비 포켓몬 지분법이익 비중과 경상이익 상회 폭</strong>을 실시간으로 시뮬레이션합니다.
+        </p>
+      </div>
+
+      <!-- Anniversary Comparison + 3 Indicators -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-7 bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-sm font-bold text-amber-500">역대 주년(20주년·25주년) vs 30주년(2026/FY27) 펀더멘털 비교</span>
+            <span class="px-2 py-0.5 rounded bg-amber-500/15 text-amber-500 text-xs font-bold">5년 주기 계단식 점프</span>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+              <thead>
+                <tr class="border-b border-[var(--border)] text-[var(--muted-foreground)]">
+                  <th class="py-2 px-2">비교 지표</th>
+                  <th class="py-2 px-2">20주년 (2016 / FY17)</th>
+                  <th class="py-2 px-2">25주년 (2021 / FY22)</th>
+                  <th class="py-2 px-2 text-amber-500 font-bold">30주년 (2026 / FY27E)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-[var(--border)]">
+                <tr>
+                  <td class="py-2 px-2 font-semibold">핵심 기념 세트</td>
+                  <td class="py-2 px-2">Generations / Evolutions</td>
+                  <td class="py-2 px-2">25th Celebrations</td>
+                  <td class="py-2 px-2 font-bold text-amber-500">30th CELEBRATION (9/16)</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-semibold">발매 방식</td>
+                  <td class="py-2 px-2">일·미 시차 발매</td>
+                  <td class="py-2 px-2">지역별 시차 발매</td>
+                  <td class="py-2 px-2 font-bold text-emerald-500">사상 최초 전 세계 동시 발매</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-semibold">연간 카드 인쇄 캐파</td>
+                  <td class="py-2 px-2">약 15억 장</td>
+                  <td class="py-2 px-2">91억 장 (공급병목 발생)</td>
+                  <td class="py-2 px-2 font-bold text-amber-500">122억 장+ (자체 인쇄소 완비)</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-semibold">팩/박스 단가(ASP)</td>
+                  <td class="py-2 px-2">일 150엔 / 미 ETB $39.99</td>
+                  <td class="py-2 px-2">일 150엔 / 미 ETB $49.99</td>
+                  <td class="py-2 px-2 font-bold text-emerald-500">일 180~550엔 / 미 ETB $59.99+</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-semibold">모바일 TCG 연동</td>
+                  <td class="py-2 px-2">없음 (포켓몬 GO 런칭)</td>
+                  <td class="py-2 px-2">없음</td>
+                  <td class="py-2 px-2 font-bold text-blue-500">포케포케 (누적 $1.6B) 동시 캠페인</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-2 font-semibold">글로벌 라이선스 소매</td>
+                  <td class="py-2 px-2">$3.3B (약 3,700억 엔)</td>
+                  <td class="py-2 px-2">$8.5B → $11.6B</td>
+                  <td class="py-2 px-2 font-bold text-purple-500">$15.7B → $18.0B+ 추산</td>
+                </tr>
+                <tr class="bg-amber-500/10 font-bold">
+                  <td class="py-2 px-2">TPC 본사 순이익</td>
+                  <td class="py-2 px-2">18.8억 → 159.2억 (+746%)</td>
+                  <td class="py-2 px-2">186.3억 → 413.9억 (+122%)</td>
+                  <td class="py-2 px-2 text-amber-500">1,200.6억 → ~1,620억 (+35%)</td>
+                </tr>
+                <tr class="bg-blue-500/10 font-bold">
+                  <td class="py-2 px-2">닌텐도 지분법이익</td>
+                  <td class="py-2 px-2">202.3억 엔</td>
+                  <td class="py-2 px-2">266.0억 엔</td>
+                  <td class="py-2 px-2 text-blue-500">1,140.0억 엔 (Base)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5 space-y-3">
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+            <div class="text-xs font-bold text-amber-500">지표 ① 유통·2차 시장: 미개봉 프리미엄과 100% Sell-in 보장</div>
+            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+              2026년 9월 16일 출시된 `30th CELEBRATION`(전 카드 Foil, 신규 FUR 등급 뮤츠ex·뮤, RGB 뮤)은 북미 TCGplayer 사상 최대 월간 거래량을 경신했습니다. 미개봉 박스가 정가 대비 1.8~2.5배 프리미엄을 유지하고 있어, 2026년 4Q~2027년 1Q에 풀리는 2·3차 재판 물량(한계 OPM 42%+)의 100% 완판이 보장된 상태입니다.
+            </p>
+          </div>
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+            <div class="text-xs font-bold text-purple-500">지표 ② 글로벌 라이선스($15.7B) & 포켓몬 파크 관동 개장</div>
+            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+              TPCi의 글로벌 라이선스 소매 매출은 2025년 $15.7B(약 2.4조 엔, YoY +30.8%)로 급증했습니다. 30주년 기념 글로벌 패션·리테일 콜라보 로열티와 2026년 신규 개장한 상설 테마파크 `포켓몬 파크 관동`이 원가 없는 순수익을 추가합니다.
+            </p>
+          </div>
+          <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-4 space-y-1.5">
+            <div class="text-xs font-bold text-emerald-500">지표 ③ 2027년 Switch 2 독점 10세대 『윈드·웨이브』 바통 터치</div>
+            <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">
+              VA 컨센서스가 FY28 소프트웨어 매출을 9,536억 엔(+14.2%)으로 높여 잡은 핵심 배경에는 2027년 발매될 <strong>10세대 본가 신작 『포켓몬스터 윈드·웨이브』</strong>가 있습니다. 본가 신작 출시는 곧바로 10세대 신규 TCG 시리즈 개막으로 이어져 30주년 이후의 피크아웃 우려를 구조적으로 차단합니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Interactive Simulator tied to VA Consensus -->
+      <div class="pt-4 border-t border-[var(--border)] space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-lg font-bold text-[var(--foreground)]">🎛️ VA 컨센서스 연동 인터랙티브 시뮬레이터 (FY2027E)</h3>
+            <p class="text-xs text-[var(--muted-foreground)]">
+              기본값은 <strong>VA 본업 영업이익 컨센서스(4,406억 엔)</strong>에 세팅되어 있으며, 포켓몬 사업부별 성장률을 조절해 <strong>VA 경상이익 컨센서스(5,793억 엔) 대비 상회 폭(Beat)</strong>을 시뮬레이션할 수 있습니다.
+            </p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 shrink-0">
+            <button onclick="applyPreset('bear')" id="preset-bear" class="px-3.5 py-2 rounded-xl text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:border-amber-500 transition">
+              🐻 Bear (지분법 965억엔)
+            </button>
+            <button onclick="applyPreset('base')" id="preset-base" class="px-3.5 py-2 rounded-xl text-xs font-semibold border-2 border-blue-500 bg-blue-500/15 text-blue-500 transition">
+              🎯 Base (당사 추론 1,140억엔)
+            </button>
+            <button onclick="applyPreset('bull')" id="preset-bull" class="px-3.5 py-2 rounded-xl text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:border-emerald-500 transition">
+              🚀 Bull (슈퍼사이클 1,318억엔)
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          <div class="lg:col-span-5 bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs font-semibold">
+                <span>1. 30주년 실물 TCG 글로벌 영업익 성장률 (YoY)</span>
+                <span id="val-tcg-growth" class="text-amber-500 font-bold">+40%</span>
+              </div>
+              <input type="range" id="slider-tcg" min="0" max="70" step="5" value="40" oninput="runSimulation()" class="w-full" />
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs font-semibold">
+                <span>2. 모바일 (`TCG Pocket` 등) 영업익 변동률 (YoY)</span>
+                <span id="val-mobile-growth" class="text-blue-500 font-bold">+15%</span>
+              </div>
+              <input type="range" id="slider-mobile" min="-20" max="40" step="5" value="15" oninput="runSimulation()" class="w-full" />
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs font-semibold">
+                <span>3. 글로벌 라이선싱($15.7B+) · 테마파크 성장률</span>
+                <span id="val-lic-growth" class="text-purple-500 font-bold">+30%</span>
+              </div>
+              <input type="range" id="slider-lic" min="5" max="50" step="5" value="30" oninput="runSimulation()" class="w-full" />
+            </div>
+
+            <div class="space-y-1.5">
+              <div class="flex justify-between text-xs font-semibold">
+                <span>4. 닌텐도 본업 영업이익 (기본값: VA 컨센 4,406억)</span>
+                <span id="val-nin-op" class="text-emerald-500 font-bold">4,406억 엔</span>
+              </div>
+              <input type="range" id="slider-nin-op" min="3700" max="5600" step="50" value="4406" oninput="runSimulation()" class="w-full" />
+              <div class="flex justify-between text-xs text-[var(--muted-foreground)]">
+                <span>3,700억 (회사 가이던스)</span>
+                <span>4,406억 (VA 컨센서스)</span>
+                <span>5,600억 (Bull)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="lg:col-span-7 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="bg-blue-500/10 border-2 border-blue-500 rounded-xl p-4">
+                <div class="text-xs text-blue-500 font-semibold">포켓몬 지분법이익 (FY27E)</div>
+                <div class="text-2xl font-bold text-blue-500 mt-1" id="sim-nin-eq">1,140억 엔</div>
+                <div class="text-xs text-emerald-500 font-semibold mt-1" id="sim-nin-eq-yoy">VA 내재치(~753억) 대비 +387억</div>
+              </div>
+
+              <div class="bg-amber-500/10 border-2 border-amber-500 rounded-xl p-4">
+                <div class="text-xs text-amber-500 font-semibold">본업 영업익 대비 지분법 비중</div>
+                <div class="text-2xl font-bold text-amber-500 mt-1" id="sim-op-ratio">25.9%</div>
+                <div class="text-xs text-[var(--muted-foreground)] mt-1" id="sim-nin-share">전체 경상이익 내 18.5%</div>
+              </div>
+
+              <div class="bg-emerald-500/10 border-2 border-emerald-500 rounded-xl p-4">
+                <div class="text-xs text-emerald-500 font-semibold">당사 경상이익 vs VA 컨센(5,793억)</div>
+                <div class="text-2xl font-bold text-emerald-500 mt-1" id="sim-total-ord">6,175억 엔</div>
+                <div class="text-xs text-emerald-500 font-bold mt-1" id="sim-va-beat">VA 컨센 대비 +382억 엔 (+6.6%)</div>
+              </div>
+            </div>
+
+            <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-4">
+              <div class="w-full h-10 rounded-xl overflow-hidden flex shadow-inner">
+                <div id="bar-sim-op" class="bg-slate-600 text-white text-xs font-bold flex items-center justify-center transition-all duration-300" style="width: 71.4%">
+                  본업 영업이익 (VA)
+                </div>
+                <div id="bar-sim-eq" class="bg-blue-600 text-white text-xs font-bold flex items-center justify-center transition-all duration-300" style="width: 18.5%">
+                  포켓몬 지분법
+                </div>
+                <div id="bar-sim-fin" class="bg-emerald-600 text-white text-xs font-bold flex items-center justify-center transition-all duration-300" style="width: 10.1%">
+                  이자·1Q환차익
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+                  <div class="text-[var(--muted-foreground)]">① 닌텐도 본업 영업이익</div>
+                  <div class="text-sm font-bold mt-0.5" id="legend-sim-op">4,406억 엔 (71.4%)</div>
+                </div>
+                <div class="p-3 rounded-lg bg-[var(--card)] border border-blue-500/50">
+                  <div class="text-blue-500 font-semibold">② 포켓몬컴퍼니 등 지분법이익</div>
+                  <div class="text-sm font-bold text-blue-500 mt-0.5" id="legend-sim-eq">1,140억 엔 (18.5%)</div>
+                </div>
+                <div class="p-3 rounded-lg bg-[var(--card)] border border-[var(--border)]">
+                  <div class="text-[var(--muted-foreground)]">③ 이자수익(480억)+1Q환차익(149억)</div>
+                  <div class="text-sm font-bold mt-0.5">629억 엔 (10.2%)</div>
+                </div>
+              </div>
+
+              <div class="p-3.5 rounded-xl bg-blue-500/10 border border-blue-500/30 text-xs leading-relaxed" id="sim-insight-text"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final Synthesis Footer -->
+  <footer class="bg-[var(--card)] border-2 border-blue-500/40 rounded-2xl p-6 shadow-sm space-y-4">
+    <div class="text-base font-bold text-blue-500">
+      📌 리서치 최종 결론: Visible Alpha 컨센서스와 포켓몬 10개년 데이터가 가리키는 투자 시사점
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs leading-relaxed">
+      <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+        <div class="text-sm font-bold text-amber-500">1. 셀사이드(VA 컨센서스)의 결정적 블라인드 스팟</div>
+        <p class="text-[var(--muted-foreground)]">
+          VA 컨센서스는 닌텐도 본업 영업이익(FY27E 4,406억 → FY28E 4,741억 엔)은 정교하게 추정하면서도, 영업외수익은 <strong>2Q~4Q 분기당 257~280억 엔(이자 차감 시 내재 지분법이익 분기당 ~150억 엔)</strong>으로 방치하고 있습니다. 비수기인 1Q에 이미 지분법 303.1억 엔이 확정된 점을 감안하면 <strong>연간 약 +380억~450억 엔의 경상이익 컨센서스 상회(Beat)</strong>가 예약되어 있습니다.
+        </p>
+      </div>
+      <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+        <div class="text-sm font-bold text-blue-500">2. 본업 영업이익의 1/4(25.9%)을 창출하는 핵심 기둥</div>
+        <p class="text-[var(--muted-foreground)]">
+          과거(FY20~24) 본업 영업이익의 2~5%에 불과했던 포켓몬 지분법이익은 인쇄 수직계열화(TPCi Millennium Print Group)와 모바일(`포케포케`), 30주년 TCG(`30th CELEBRATION`)가 결합하며 <strong>FY26 23.0% → FY27E 25.9%(1,140억 엔) → FY28E 24.9%(1,180억 엔)</strong>로 구조적 레벨업을 마쳤습니다.
+        </p>
+      </div>
+      <div class="p-4 rounded-xl bg-[var(--background)] border border-[var(--border)] space-y-1.5">
+        <div class="text-sm font-bold text-emerald-500">3. Switch 2 하드웨어 마진 저하를 완벽히 방어하는 방패</div>
+        <p class="text-[var(--muted-foreground)]">
+          Switch 2 보급 초기에는 하드웨어 원가 부담으로 인해 매출(2.26조~2.47조 엔) 대비 본업 영업이익률(19.5%)이 과거 스위치 1 피크기(35%)보다 낮게 형성됩니다. 바로 이 구간에서 <strong>원가 없는 포켓몬 지분법 순이익(연 1,140억~1,180억 엔)이 경상이익률을 27%+로 끌어올리는 가장 강력한 밸류에이션 리레이팅 동력</strong>으로 작동합니다.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Standalone browser fallback (ensures clean rendering when opened directly in Chrome/Safari/Slack)
+    (function ensureStandaloneTheme() {
+      const bg = getComputedStyle(document.documentElement).getPropertyValue('--background').trim();
+      if (!bg) {
+        const isLight = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
+        const vars = isLight
+          ? { '--background': '#f8fafc', '--card': '#ffffff', '--foreground': '#0f172a', '--muted-foreground': '#64748b', '--border': '#e2e8f0' }
+          : { '--background': '#0f172a', '--card': '#1e293b', '--foreground': '#f8fafc', '--muted-foreground': '#94a3b8', '--border': '#334155' };
+        Object.entries(vars).forEach(([k, v]) => document.documentElement.style.setProperty(k, v));
+      }
+    })();
+
+    // --- SECTION QUICK-JUMP & SCROLL-SPY ---
+    const sections = ['sec-va', 'sec-timeseries', 'sec-global', 'sec-segments', 'sec-forecast'];
+
+    function highlightNavButton(activeId) {
+      sections.forEach(id => {
+        const tab = document.getElementById('tab-' + id);
+        if (!tab) return;
+        if (id === activeId) {
+          tab.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-blue-600 text-white shadow-sm transition';
+        } else {
+          tab.className = 'px-3 py-1.5 rounded-xl text-xs font-semibold bg-[var(--card)] text-[var(--foreground)] border border-[var(--border)] hover:border-blue-500 transition';
+        }
+      });
+    }
+
+    function scrollToSection(targetId) {
+      const el = document.getElementById(targetId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        highlightNavButton(targetId);
+      }
+    }
+
+    window.addEventListener('scroll', () => {
+      let current = sections[0];
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= 160) {
+          current = id;
+        }
+      }
+      highlightNavButton(current);
+    }, { passive: true });
+
+    // --- SECTION 1: VA VERTICAL STACKED CHART (FY2020 ~ FY2030E) ---
+    const vaChartData = [
+      { yr: 'FY20', op: 3524, eq: 127, fin: -46, ord: 3605, vaOrd: 3605, ratio: '3.6%', est: false },
+      { yr: 'FY21', op: 6406, eq: 156, fin: 228, ord: 6790, vaOrd: 6790, ratio: '2.4%', est: false },
+      { yr: 'FY22', op: 5928, eq: 266, fin: 514, ord: 6708, vaOrd: 6708, ratio: '4.5%', est: false },
+      { yr: 'FY23', op: 5044, eq: 266, fin: 701, ord: 6011, vaOrd: 6011, ratio: '5.3%', est: false },
+      { yr: 'FY24', op: 5289, eq: 301, fin: 1215, ord: 6805, vaOrd: 6805, ratio: '5.7%', est: false },
+      { yr: 'FY25', op: 2826, eq: 351, fin: 546, ord: 3723, vaOrd: 3723, ratio: '12.4%', est: false },
+      { yr: 'FY26', op: 3601, eq: 828, fin: 993, ord: 5422, vaOrd: 5422, ratio: '23.0%', est: false, highlight: true },
+      { yr: 'FY27E', op: 4406, eq: 1140, fin: 629, ord: 6175, vaOrd: 5793, ratio: '25.9%', est: true, focus: true },
+      { yr: 'FY28E', op: 4741, eq: 1180, fin: 520, ord: 6441, vaOrd: 5984, ratio: '24.9%', est: true, focus: true },
+      { yr: 'FY29E', op: 5648, eq: 1150, fin: 520, ord: 7318, vaOrd: 6956, ratio: '20.4%', est: true },
+      { yr: 'FY30E', op: 5936, eq: 1220, fin: 520, ord: 7676, vaOrd: 7515, ratio: '20.6%', est: true }
+    ];
+
+    function renderVaVerticalChart() {
+      const maxOrd = 8200;
+      const chartEl = document.getElementById('va-vertical-chart');
+      const labelEl = document.getElementById('va-vertical-labels');
+
+      chartEl.innerHTML = vaChartData.map(d => {
+        const finPos = Math.max(0, d.fin);
+        const hOp = Math.round((d.op / maxOrd) * 230);
+        const hEq = Math.round((d.eq / maxOrd) * 230);
+        const hFin = Math.round((finPos / maxOrd) * 230);
+
+        return `
+          <div class="flex flex-col items-center justify-end h-full group relative">
+            <!-- Top Badge: Ratio & Total Ord -->
+            <div class="text-center mb-1 space-y-0.5">
+              <div class="inline-block px-1.5 py-0.5 rounded text-[12px] font-bold ${d.focus ? 'bg-amber-500 text-slate-950' : d.highlight ? 'bg-blue-500/20 text-blue-500' : 'bg-[var(--card)] text-amber-500 border border-[var(--border)]'}">
+                ${d.ratio}
+              </div>
+              <div class="text-[12px] font-bold ${d.focus ? 'text-emerald-500' : 'text-[var(--foreground)]'}">
+                ${d.ord.toLocaleString()}
+              </div>
+              ${d.est ? `<div class="text-[12px] text-[var(--muted-foreground)]" title="VA 경상이익 컨센서스">VA:${d.vaOrd.toLocaleString()}</div>` : ''}
+            </div>
+
+            <!-- Stacked Bar -->
+            <div class="w-full max-w-[48px] flex flex-col justify-end rounded-t-lg overflow-hidden bar-fill-y ${d.focus ? 'ring-2 ring-emerald-500' : d.highlight ? 'ring-2 ring-blue-500' : ''}">
+              <div class="bg-emerald-500/85 w-full transition-all" style="height: ${hFin}px" title="${d.yr} 기타 금융수익(이자·환차익): ${d.fin}억 엔"></div>
+              <div class="bg-blue-500 w-full flex items-center justify-center text-[12px] font-bold text-white transition-all" style="height: ${hEq}px" title="${d.yr} 포켓몬 지분법이익: ${d.eq}억 엔">
+                ${hEq >= 18 ? d.eq : ''}
+              </div>
+              <div class="${d.est ? 'bg-slate-600' : 'bg-slate-500'} w-full flex items-center justify-center text-[12px] font-semibold text-white transition-all" style="height: ${hOp}px" title="${d.yr} 본업 영업이익(VA): ${d.op}억 엔">
+                ${hOp >= 28 ? d.op : ''}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      labelEl.innerHTML = vaChartData.map(d => `
+        <div class="font-bold ${d.focus ? 'text-emerald-500' : d.highlight ? 'text-blue-500' : 'text-[var(--foreground)]'}">
+          ${d.yr}
+        </div>
+      `).join('');
+    }
+
+    // --- SECTION 2: 10-YEAR TIME SERIES DECOMPOSITION ---
+    const tsData = [
+      { yr: 'FY2017 (20주년·GO)', tpc32: 50.9, residual: 151.4, total: 202.3, mult: '3.97x', opShare: '69.0%' },
+      { yr: 'FY2018 (Switch 출범)', tpc32: 28.3, residual: 96.5, total: 124.8, mult: '4.41x', opShare: '7.0%' },
+      { yr: 'FY2019 (레츠고)', tpc32: 42.8, residual: 86.7, total: 129.5, mult: '3.02x', opShare: '5.2%' },
+      { yr: 'FY2020 (소드·실드)', tpc32: 49.2, residual: 77.9, total: 127.1, mult: '2.58x', opShare: '3.6%' },
+      { yr: 'FY2021 (코로나 붐)', tpc32: 59.6, residual: 96.3, total: 155.9, mult: '2.62x', opShare: '2.4%' },
+      { yr: 'FY2022 (25주년 TCG)', tpc32: 132.4, residual: 133.6, total: 266.0, mult: '2.01x', opShare: '4.5%' },
+      { yr: 'FY2023 (스칼렛·바이올렛)', tpc32: 156.3, residual: 109.7, total: 266.0, mult: '1.70x', opShare: '5.3%' },
+      { yr: 'FY2024 (카드151·증설)', tpc32: 200.6, residual: 100.4, total: 301.0, mult: '1.50x', opShare: '5.7%' },
+      { yr: 'FY2025 (포케포케 출시)', tpc32: 225.1, residual: 126.2, total: 351.3, mult: '1.56x', opShare: '12.4%' },
+      { yr: 'FY2026 (확정 실적)', tpc32: 384.2, residual: 443.7, total: 827.9, mult: '2.15x', opShare: '23.0%', highlight: true },
+      { yr: 'FY2027E (30주년 Base)', tpc32: 518.4, residual: 621.6, total: 1140.0, mult: '2.20x', opShare: '25.9%', forecast: true },
+      { yr: 'FY2028E (10세대 신작)', tpc32: 537.6, residual: 642.4, total: 1180.0, mult: '2.19x', opShare: '24.9%', forecast: true }
+    ];
+
+    function renderTimeSeriesBars() {
+      const maxTotal = 1250;
+      const container = document.getElementById('ts-decomposition-bars');
+      container.innerHTML = tsData.map(d => {
+        const w1 = ((d.tpc32 / maxTotal) * 100).toFixed(1);
+        const w2 = ((d.residual / maxTotal) * 100).toFixed(1);
+        const rowClass = d.highlight
+          ? 'bg-blue-500/10 border-2 border-blue-500/60'
+          : d.forecast
+            ? 'bg-emerald-500/10 border border-emerald-500/40'
+            : 'bg-[var(--card)] border border-[var(--border)]';
+
+        return `
+          <div class="p-2.5 rounded-xl ${rowClass} grid grid-cols-1 md:grid-cols-12 gap-2 items-center text-xs">
+            <div class="md:col-span-2 font-bold ${d.forecast ? 'text-emerald-500' : d.highlight ? 'text-blue-500' : 'text-[var(--foreground)]'}">
+              ${d.yr}
+            </div>
+            <div class="md:col-span-6 flex items-center gap-2">
+              <div class="flex-1 bg-[var(--background)] h-5 rounded-lg overflow-hidden flex">
+                <div class="bg-amber-500 h-full bar-fill flex items-center justify-center text-[12px] font-bold text-slate-950 overflow-hidden" style="width: ${w1}%">
+                  ${d.tpc32 >= 120 ? d.tpc32 + '억' : ''}
+                </div>
+                <div class="bg-purple-500 h-full bar-fill flex items-center justify-center text-[12px] font-bold text-white overflow-hidden" style="width: ${w2}%">
+                  ${d.residual >= 120 ? '+' + d.residual + '억' : ''}
+                </div>
+              </div>
+            </div>
+            <div class="md:col-span-4 flex items-center justify-between md:justify-end gap-3">
+              <span class="text-[var(--muted-foreground)]">본사32% <strong class="text-amber-500">${d.tpc32}억</strong> + 잔차 <strong class="text-purple-500">${d.residual}억</strong></span>
+              <span class="font-bold text-blue-500 w-20 text-right">= ${d.total.toLocaleString()}억</span>
+              <span class="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-500 font-bold w-16 text-center">${d.opShare}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- SECTION 3: ENTITY DETAIL DATA ---
+    const entityData = {
+      tpc_jp: {
+        badge: '🇯🇵 일본 본사 (관보 제28기 공시)',
+        title: '주식회사 포켓몬 (일본 본사 단독)',
+        metrics: [
+          { label: '매출액 (FY26.2)', val: '5,314.3억 엔 (+29.3%)' },
+          { label: '영업이익 (FY26.2)', val: '1,439.7억 엔 (OPM 27.1%)' },
+          { label: '당기순이익 (FY26.2)', val: '1,200.6억 엔 (+70.7%)' },
+          { label: '닌텐도 32% 귀속액', val: '384.2억 엔 (전체의 46.4%)' }
+        ],
+        desc: '일본 국내 실물 TCG 유통, 일본 직영 포켓몬센터, 모바일 게임(`포켓몬 TCG Pocket`, `포켓몬 GO`, `포켓몬 슬립`)의 글로벌 수익 정산, 콘솔 게임 퍼블리싱 및 해외 자회사로부터의 일부 IP 로열티를 인식하는 본사 단독 재무제표입니다.',
+        points: [
+          '관보에 공시되는 수치는 연결(Consolidated)이 아닌 일본 본사 단독(Standalone) 재무제표임에 유의해야 함',
+          '해외 100% 자회사(TPCi 등)가 현지 설비 투자 및 운영을 위해 본사로 배당하지 않고 유보한 순이익은 관보 순이익(1,200.6억 엔)에 포함되지 않으나, 닌텐도 연결 지분법에는 32%가 정상 합산됨'
+        ]
+      },
+      tpci: {
+        badge: '🌎 서구권 총괄 100% 자회사',
+        title: 'The Pokémon Company International (TPCi)',
+        metrics: [
+          { label: '글로벌 라이선스 소매 (25년)', val: '$15.7B (약 2.4조 엔, +30.8%)' },
+          { label: '추정 직영 매출액 (FY26)', val: '약 5,100억 엔 (~$3.3B)' },
+          { label: '추정 당기순이익 (FY26)', val: '약 1,080억 엔 (~$700M)' },
+          { label: '닌텐도 32% 귀속액', val: '약 345.6억 엔 (전체의 41.7%)' }
+        ],
+        desc: '미국 워싱턴주 벨뷰 본사 및 영국 런던 지사(UK Companies House 등록번호 FC026260)를 통해 북미·유럽·호주·중남미 사업을 총괄합니다. 2022년 미국 노스캐롤라이나 소재 대형 카드 인쇄사 Millennium Print Group을 인수해 서구권 TCG 생산을 수직계열화했습니다.',
+        points: [
+          'FY22~FY24 기간 동안 인쇄소 인수 및 생산라인 증설(CAPEX)로 감가상각비가 집중되었으나, FY26부터 투자 회수기에 진입하며 이익률이 급등',
+          '북미·유럽은 팩 단가가 일본의 2.5~3배에 달하고 고마진 박스 상품(ETB $49.99~$59.99) 위주로 판매되어 일본 본사에 필적하는 순이익 창출'
+        ]
+      },
+      asia: {
+        badge: '🇰🇷🇨🇳 아시아 100% 자회사',
+        title: '포켓몬코리아 & 포켓몬 상하이(중국) 외',
+        metrics: [
+          { label: '포켓몬코리아 매출 (25년)', val: '732.7억 원 (YoY +57.5%)' },
+          { label: '포켓몬코리아 순이익 (25년)', val: '110.9억 원 (OPM 18.1%)' },
+          { label: '중국·아시아 합산 추정 순익', val: '약 160.2억 엔' },
+          { label: '닌텐도 32% 귀속액', val: '약 51.3억 엔' }
+        ],
+        desc: '한국 법인((주)포켓몬코리아)은 삼덕회계법인 감사보고서를 통해 2025년 매출 732.7억 원, 영업이익 132.7억 원, 순이익 110.9억 원이 확인됩니다. 중국 법인(포켓몬 상하이)은 2022년 말 정식 런칭한 중국어 간체자 TCG가 2025~2026년 폭발적으로 성장하며 이익 기여도를 높이고 있습니다.',
+        points: [
+          '한국 시장은 2026년 30주년 확장팩 품절 대란 및 팝업스토어 흥행으로 2026년 매출 1,000억 원 돌파가 유력',
+          '중국 본토 간체자 TCG 시장은 25주년 당시에는 없었던 신규 성장 동력으로 30주년 글로벌 물량 확대를 견인'
+        ]
+      },
+      tpc_cons: {
+        badge: '🏢 글로벌 연결 합산',
+        title: '포켓몬컴퍼니(TPC) 그룹 글로벌 연결 실적',
+        metrics: [
+          { label: '연결 매출액 (내부거래 제거)', val: '약 1조 500억 엔' },
+          { label: '연결 영업이익', val: '약 2,950억 엔 (OPM 28.1%)' },
+          { label: '연결 당기순이익', val: '약 2,320억 엔' },
+          { label: '닌텐도 32% 지분법 귀속', val: '약 742.4억 엔' }
+        ],
+        desc: '일본 본사(1,200.6억 엔) + TPCi(1,080억 엔) + 아시아 법인(160.2억 엔)에서 본사-자회사 간 배당 및 미실현 재고이익(-120.8억 엔)을 차감한 글로벌 연결 순이익은 약 2,320억 엔으로 추산됩니다.',
+        points: [
+          '닌텐도 지분법이익(827.9억 엔) 중 약 90%(742.4억 엔)가 바로 이 TPC 글로벌 연결 순이익의 32%에서 도출됨',
+          '나머지 약 10%(85.5억 엔)는 닌텐도가 별도로 지분을 보유한 (주)크리처스 및 기타 관계사에서 합산'
+        ]
+      },
+      creatures: {
+        badge: '🃏 원작·개발 관계사',
+        title: '(주)크리처스 (Creatures Inc.) 및 기타 지분법 대상',
+        metrics: [
+          { label: '핵심 역할', val: '포켓몬 TCG 기획·개발 총괄' },
+          { label: '모바일 공동개발', val: '포켓몬 TCG Pocket (with DeNA)' },
+          { label: 'TPC 지분 보유', val: '약 33% (닌텐도·게임프리크와 3분할)' },
+          { label: '닌텐도 지분법 추가 기여', val: '약 85.5억 엔' }
+        ],
+        desc: '크리처스는 포켓몬 원작 3사 중 하나로 실물 포켓몬 카드의 기획·밸런싱·일러스트 총괄 및 `포켓몬 TCG Pocket` 개발을 담당합니다. 닌텐도는 크리처스 지분 및 기타 지분법 적용 회사를 통해서도 지분법이익을 인식합니다.',
+        points: [
+          '실물 TCG 100억 장 인쇄 및 모바일 포케포케 흥행 시 개발 로열티가 크리처스에 직접 유입되는 구조',
+          '크리처스가 보유한 TPC 지분 가치까지 감안할 때 포켓몬 생태계에 대한 닌텐도의 실질 경제적 이해관계(Effective Economic Interest)는 단순 32%를 상회하여 약 35~36%에 달함'
+        ]
+      },
+      nintendo: {
+        badge: '🎮 최종 수혜 모회사',
+        title: '닌텐도 연결 손익계산서 (FY26 확정 → FY27E 전망)',
+        metrics: [
+          { label: 'FY26.3 지분법 투자이익', val: '827.9억 엔 (영업익의 23.0%)' },
+          { label: 'FY27 1Q(4~6월) 확정치', val: '303.1억 엔 (1Q 영업익의 21.3%)' },
+          { label: 'FY27.3E 연간 전망 (Base)', val: '1,140.0억 엔 (VA 영업익의 25.9%)' },
+          { label: 'FY28.3E 연간 전망 (10세대)', val: '1,180.0억 엔 (VA 영업익의 24.9%)' }
+        ],
+        desc: '과거 콘솔 사이클의 보조 지표였던 지분법 투자이익이 이제 닌텐도 본업 영업이익의 1/4 이상을 창출하는 핵심 캐시카우로 부상했습니다.',
+        points: [
+          '원가와 판관비가 전혀 들지 않는 순수 이익(Pure Profit)이므로 닌텐도 밸류에이션 멀티플(PER) 하단을 지지하는 강력한 안전판 역할 수행'
+        ]
+      }
+    };
+
+    function selectEntity(key) {
+      Object.keys(entityData).forEach(k => {
+        const node = document.getElementById('node-' + k);
+        if (node) {
+          if (k === key) {
+            node.classList.add('active-node', 'border-2', 'border-blue-500');
+          } else {
+            node.classList.remove('active-node', 'border-2', 'border-blue-500');
+          }
+        }
+      });
+
+      const d = entityData[key];
+      const panel = document.getElementById('entity-detail-panel');
+      panel.innerHTML = `
+        <div class="inline-flex items-center px-2.5 py-1 rounded-md bg-blue-500/15 text-blue-500 text-xs font-bold">
+          ${d.badge}
+        </div>
+        <h3 class="text-lg font-bold text-[var(--foreground)]">${d.title}</h3>
+        <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">${d.desc}</p>
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          ${d.metrics.map(m => `
+            <div class="bg-[var(--card)] border border-[var(--border)] rounded-lg p-2.5">
+              <div class="text-xs text-[var(--muted-foreground)]">${m.label}</div>
+              <div class="text-sm font-bold text-[var(--foreground)] mt-0.5">${m.val}</div>
+            </div>
+          `).join('')}
+        </div>
+        <div class="space-y-1.5 pt-2 border-t border-[var(--border)]">
+          <div class="text-xs font-bold text-[var(--foreground)]">핵심 회계·비즈니스 인사이트</div>
+          <ul class="space-y-1.5">
+            ${d.points.map(p => `
+              <li class="text-xs text-[var(--muted-foreground)] flex items-start gap-1.5">
+                <span class="text-blue-500 font-bold">•</span>
+                <span>${p}</span>
+              </li>
+            `).join('')}
+          </ul>
+        </div>
+      `;
+    }
+
+    // --- SECTION 4: SEGMENT DATA ---
+    const segmentData = {
+      consolidated: {
+        revTitle: '글로벌 연결 매출액 구성 (약 1조 500억 엔)',
+        opTitle: '글로벌 연결 영업이익 구성 (약 2,950억 엔, OPM 28.1%)',
+        segments: [
+          {
+            name: '실물 TCG (포켓몬 카드게임)',
+            color: 'bg-amber-500',
+            textColor: 'text-amber-500',
+            rev: 4800,
+            revShare: 45.7,
+            op: 1350,
+            opShare: 45.8,
+            opm: 28.1,
+            kpi: '연간 100억~119억 장 인쇄 / 누적 850억 장 돌파',
+            detail: '일본 내수(크리처스 기획) + 북미·유럽(TPCi 산하 Millennium Print Group 자체 인쇄). 2026년 9월 16일 전 세계 동시 발매된 30주년 세트(`30th CELEBRATION`)와 홀리데이 스페셜 박스 출하로 FY27에는 매출 6,200억 엔, 영업이익 1,850억 엔 이상으로 확대될 전망입니다.'
+          },
+          {
+            name: '모바일 게임 (포케포케 · GO · 슬립)',
+            color: 'bg-blue-500',
+            textColor: 'text-blue-500',
+            rev: 2100,
+            revShare: 20.0,
+            op: 850,
+            opShare: 28.8,
+            opm: 40.5,
+            kpi: '포케포케 누적 매출 $1.6B (약 2,450억 엔) 돌파',
+            detail: '`포켓몬 TCG Pocket`은 앱마켓 수수료(30%)와 공동개발사 DeNA 배분(약 25~28%)을 제외한 순유입액이 고스란히 TPC와 크리처스의 고마진 영업이익으로 계상됩니다. 실물 30주년 카드와의 크로스 프로모션으로 MAU와 과금 유지율이 견조하게 유지되고 있습니다.'
+          },
+          {
+            name: 'IP 라이선싱 · 포켓몬센터 · 테마파크',
+            color: 'bg-purple-500',
+            textColor: 'text-purple-500',
+            rev: 2000,
+            revShare: 19.0,
+            op: 500,
+            opShare: 16.9,
+            opm: 25.0,
+            kpi: '글로벌 라이선스 소매판매 $15.7B (세계 6위)',
+            detail: '전 세계 굿즈·의류·식음료 라이선스 로열티(원가율 0%에 가까운 순수익)와 직영 포켓몬센터(방일 외국인 면세 특수), 그리고 2026년 개장한 상설 테마파크 `포켓몬 파크 관동(PokéPark KANTO)` 수익이 결합된 안정적 캐시카우입니다.'
+          },
+          {
+            name: '콘솔 패키지 게임 (레전즈 Z-A · 구작)',
+            color: 'bg-emerald-500',
+            textColor: 'text-emerald-500',
+            rev: 1600,
+            revShare: 15.3,
+            op: 250,
+            opShare: 8.5,
+            opm: 15.6,
+            kpi: '포켓몬 레전즈 Z-A 출시 및 2027년 10세대 대기',
+            detail: '콘솔 본가 및 스핀오프 게임은 개발비·마케팅비 반영으로 자체 OPM은 15.6% 수준이나, 새로운 세대의 포켓몬 IP를 공급해 실물 TCG와 라이선싱 매출을 폭발시키는 생태계 최상단 엔진 역할을 담당합니다.'
+          }
+        ]
+      },
+      standalone: {
+        revTitle: '일본 본사(단독) 매출액 구성 (5,314.3억 엔)',
+        opTitle: '일본 본사(단독) 영업이익 구성 (1,439.7억 엔, OPM 27.1%)',
+        segments: [
+          {
+            name: '실물 TCG (일본 내수 + 아시아 수출)',
+            color: 'bg-amber-500',
+            textColor: 'text-amber-500',
+            rev: 2150,
+            revShare: 40.5,
+            op: 580,
+            opShare: 40.3,
+            opm: 27.0,
+            kpi: '일본 내수 TCG 시장 압도적 1위',
+            detail: '일본 국내 확장팩(팩당 180엔) 및 하이클래스 팩(550엔+) 판매 수익입니다. 사재기 방지를 위해 공식 온라인몰에 마이넘버카드 인증 추첨제를 도입할 만큼 초과수요가 지속 중입니다.'
+          },
+          {
+            name: '모바일 게임 글로벌 정산 (포케포케 등)',
+            color: 'bg-blue-500',
+            textColor: 'text-blue-500',
+            rev: 1450,
+            revShare: 27.3,
+            op: 550,
+            opShare: 38.2,
+            opm: 37.9,
+            kpi: '글로벌 앱마켓 퍼블리셔 본사 집중',
+            detail: '`포켓몬 TCG Pocket`과 `포켓몬 슬립`의 글로벌 퍼블리셔가 일본 본사(주식회사 포켓몬)로 등록되어 있어, 전 세계 모바일 과금 수익의 상당 부분이 일본 본사 단독 손익계산서에 직접 반영됩니다.'
+          },
+          {
+            name: '일본 포켓몬센터 · 내수 라이선싱 · 로열티',
+            color: 'bg-purple-500',
+            textColor: 'text-purple-500',
+            rev: 914,
+            revShare: 17.2,
+            op: 200,
+            opShare: 13.9,
+            opm: 21.9,
+            kpi: '방일 관광객 포켓몬센터 면세 매출 급증',
+            detail: '일본 전국 포켓몬센터 직영점 매출과 일본 내 라이선스 수익, 그리고 해외 자회사로부터 수취하는 기본 IP 로열티입니다.'
+          },
+          {
+            name: '콘솔 게임 (레전즈 Z-A 등)',
+            color: 'bg-emerald-500',
+            textColor: 'text-emerald-500',
+            rev: 800,
+            revShare: 15.0,
+            op: 110,
+            opShare: 7.6,
+            opm: 13.8,
+            kpi: '일본 내 퍼블리싱 및 글로벌 원작 사용료',
+            detail: '`포켓몬 레전즈 Z-A` 및 구작 카탈로그 판매에 따른 본사 인식 매출 및 영업이익입니다.'
+          }
+        ]
+      }
+    };
+
+    function setSegmentScope(scope) {
+      const btnCons = document.getElementById('btn-scope-cons');
+      const btnStand = document.getElementById('btn-scope-stand');
+      if (scope === 'consolidated') {
+        btnCons.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition';
+        btnStand.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition';
+      } else {
+        btnStand.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 text-white transition';
+        btnCons.className = 'px-3 py-1.5 rounded-lg text-xs font-semibold text-[var(--muted-foreground)] hover:text-[var(--foreground)] transition';
+      }
+
+      const data = segmentData[scope];
+      document.getElementById('seg-rev-title').textContent = data.revTitle;
+      document.getElementById('seg-op-title').textContent = data.opTitle;
+
+      document.getElementById('seg-rev-bar').innerHTML = data.segments.map(s => `
+        <div class="${s.color} text-white text-xs font-bold flex items-center justify-center transition-all duration-500" style="width: ${s.revShare}%">
+          ${s.revShare.toFixed(0)}%
+        </div>
+      `).join('');
+
+      document.getElementById('seg-op-bar').innerHTML = data.segments.map(s => `
+        <div class="${s.color} text-white text-xs font-bold flex items-center justify-center transition-all duration-500" style="width: ${s.opShare}%">
+          ${s.opShare.toFixed(0)}%
+        </div>
+      `).join('');
+
+      document.getElementById('seg-rev-legend').innerHTML = data.segments.map(s => `
+        <div class="text-xs">
+          <div class="flex items-center gap-1 font-semibold ${s.textColor}">
+            <span class="w-2.5 h-2.5 rounded-sm ${s.color}"></span>
+            <span class="truncate">${s.name.split(' ')[0]} ${s.name.split(' ')[1] || ''}</span>
+          </div>
+          <div class="font-bold mt-0.5">${s.rev.toLocaleString()}억엔 (${s.revShare}%)</div>
+        </div>
+      `).join('');
+
+      document.getElementById('seg-op-legend').innerHTML = data.segments.map(s => `
+        <div class="text-xs">
+          <div class="flex items-center gap-1 font-semibold ${s.textColor}">
+            <span class="w-2.5 h-2.5 rounded-sm ${s.color}"></span>
+            <span class="truncate">${s.name.split(' ')[0]} ${s.name.split(' ')[1] || ''}</span>
+          </div>
+          <div class="font-bold mt-0.5">${s.op.toLocaleString()}억엔 (${s.opShare}%)</div>
+        </div>
+      `).join('');
+
+      document.getElementById('segment-cards-container').innerHTML = data.segments.map(s => `
+        <div class="bg-[var(--background)] border border-[var(--border)] rounded-xl p-5 space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-base font-bold ${s.textColor}">${s.name}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-[var(--card)] border border-[var(--border)]">
+              OPM ${s.opm}%
+            </span>
+          </div>
+          <div class="grid grid-cols-2 gap-3 bg-[var(--card)] p-3 rounded-lg border border-[var(--border)]">
+            <div>
+              <div class="text-xs text-[var(--muted-foreground)]">추정 매출액 (비중)</div>
+              <div class="text-base font-bold mt-0.5">${s.rev.toLocaleString()}억 엔 (${s.revShare}%)</div>
+            </div>
+            <div>
+              <div class="text-xs text-[var(--muted-foreground)]">추정 영업이익 (비중)</div>
+              <div class="text-base font-bold ${s.textColor} mt-0.5">${s.op.toLocaleString()}억 엔 (${s.opShare}%)</div>
+            </div>
+          </div>
+          <div class="text-xs font-semibold text-[var(--foreground)]">📊 핵심 지표: ${s.kpi}</div>
+          <p class="text-xs text-[var(--muted-foreground)] leading-relaxed">${s.detail}</p>
+        </div>
+      `).join('');
+    }
+
+    // --- SECTION 5: SIMULATOR LOGIC TIED TO VA CONSENSUS ---
+    function applyPreset(mode) {
+      const presets = {
+        bear: { tcg: 15, mobile: -10, lic: 15, ninOp: 4406 },
+        base: { tcg: 40, mobile: 15, lic: 30, ninOp: 4406 },
+        bull: { tcg: 65, mobile: 30, lic: 45, ninOp: 4750 }
+      };
+      const p = presets[mode];
+      document.getElementById('slider-tcg').value = p.tcg;
+      document.getElementById('slider-mobile').value = p.mobile;
+      document.getElementById('slider-lic').value = p.lic;
+      document.getElementById('slider-nin-op').value = p.ninOp;
+
+      ['bear', 'base', 'bull'].forEach(m => {
+        const btn = document.getElementById('preset-' + m);
+        if (m === mode) {
+          btn.className = 'px-3.5 py-2 rounded-xl text-xs font-semibold border-2 border-blue-500 bg-blue-500/15 text-blue-500 transition';
+        } else {
+          btn.className = 'px-3.5 py-2 rounded-xl text-xs font-semibold border border-[var(--border)] bg-[var(--background)] hover:border-blue-500 transition';
+        }
+      });
+
+      runSimulation();
+    }
+
+    function runSimulation() {
+      const tcgG = parseInt(document.getElementById('slider-tcg').value, 10);
+      const mobG = parseInt(document.getElementById('slider-mobile').value, 10);
+      const licG = parseInt(document.getElementById('slider-lic').value, 10);
+      const ninOp = parseInt(document.getElementById('slider-nin-op').value, 10);
+
+      document.getElementById('val-tcg-growth').textContent = (tcgG >= 0 ? '+' : '') + tcgG + '%';
+      document.getElementById('val-mobile-growth').textContent = (mobG >= 0 ? '+' : '') + mobG + '%';
+      document.getElementById('val-lic-growth').textContent = (licG >= 0 ? '+' : '') + licG + '%';
+      document.getElementById('val-nin-op').textContent = ninOp.toLocaleString() + '억 엔';
+
+      const newTcgOp = 1350 * (1 + tcgG / 100);
+      const newMobOp = 850 * (1 + mobG / 100);
+      const newLicOp = 500 * (1 + licG / 100);
+      const newConOp = 365;
+      const totalTpcOp = newTcgOp + newMobOp + newLicOp + newConOp;
+      const totalTpcNet = Math.round(totalTpcOp * 0.786);
+
+      const ninEq = Math.round(totalTpcNet * 0.32 + (newTcgOp + newMobOp) * 0.052);
+      const vaImpliedEq = 753;
+      const eqDiff = ninEq - vaImpliedEq;
+
+      // Non-op interest + locked-in 1Q FX gain = 629억엔
+      const finIncome = 629;
+      const totalOrd = ninOp + ninEq + finIncome;
+      const vaOrd = 5793;
+      const ordDiff = totalOrd - vaOrd;
+      const ordBeatPct = ((ordDiff / vaOrd) * 100).toFixed(1);
+
+      const ordShare = ((ninEq / totalOrd) * 100).toFixed(1);
+      const opRatio = ((ninEq / ninOp) * 100).toFixed(1);
+
+      document.getElementById('sim-nin-eq').textContent = ninEq.toLocaleString() + '억 엔';
+      document.getElementById('sim-nin-eq-yoy').textContent = `VA 내재치(~753억) 대비 ${eqDiff >= 0 ? '+' : ''}${eqDiff.toLocaleString()}억`;
+      document.getElementById('sim-op-ratio').textContent = opRatio + '%';
+      document.getElementById('sim-nin-share').textContent = `전체 경상이익 내 ${ordShare}%`;
+      document.getElementById('sim-total-ord').textContent = totalOrd.toLocaleString() + '억 엔';
+      document.getElementById('sim-va-beat').textContent = `VA 컨센(5,793억) 대비 ${ordDiff >= 0 ? '+' : ''}${ordDiff.toLocaleString()}억 엔 (${ordBeatPct >= 0 ? '+' : ''}${ordBeatPct}%)`;
+
+      const wOp = ((ninOp / totalOrd) * 100).toFixed(1);
+      const wEq = ((ninEq / totalOrd) * 100).toFixed(1);
+      const wFin = ((finIncome / totalOrd) * 100).toFixed(1);
+
+      document.getElementById('bar-sim-op').style.width = wOp + '%';
+      document.getElementById('bar-sim-eq').style.width = wEq + '%';
+      document.getElementById('bar-sim-fin').style.width = wFin + '%';
+
+      document.getElementById('legend-sim-op').textContent = `${ninOp.toLocaleString()}억 엔 (${wOp}%)`;
+      document.getElementById('legend-sim-eq').textContent = `${ninEq.toLocaleString()}억 엔 (${wEq}%)`;
+
+      const consoleUnits = Math.round((ninEq * 100000000) / 4000 / 10000);
+      const gameUnits = Math.round((ninEq * 100000000) / 4500 / 10000);
+      document.getElementById('sim-insight-text').innerHTML = `
+        💡 <strong>시뮬레이션 해석:</strong> 본업 영업이익 <strong>${ninOp.toLocaleString()}억 엔</strong> 대비 포켓몬 지분법이익(<strong>${ninEq.toLocaleString()}억 엔</strong>)의 비중은 <strong>${opRatio}%</strong>에 달합니다. 이는 닌텐도가 <strong>Switch 2 본체 약 ${consoleUnits.toLocaleString()}만 대</strong>(VA FY27 연간 본체 판매 컨센서스 1,684만 대의 <strong>${((consoleUnits / 1684) * 100).toFixed(0)}%</strong>에 달하는 물량!) 또는 <strong>퍼스트파티 게임 약 ${gameUnits.toLocaleString()}만 장</strong>을 팔아야 남는 영업이익과 동일합니다.
+      `;
+    }
+
+    // Initialize all views
+    renderVaVerticalChart();
+    renderTimeSeriesBars();
+    selectEntity('tpc_jp');
+    setSegmentScope('consolidated');
+    runSimulation();
+  </script>
+</body>
+</html>
