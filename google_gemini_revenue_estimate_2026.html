@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>구글 제미나이, 실제로 돈 얼마나 벌고 있을까? (구독·네온·API 쉬운 분석)</title>
-  <meta name="description" content="구글의 섞여 있는 구독·클라우드 실적에서 순수 제미나이 개인 구독(47억→74억 달러)과 자체 API(110억→201억 달러)를 발라내어 클로드·오픈AI와 비교한 인터랙티브 차트 리포트" />
+  <title>구글 제미나이, 실제로 돈 얼마나 벌고 있을까? (쉬운 차트 + 심층 분석)</title>
+  <meta name="description" content="구글의 섞여 있는 구독·클라우드 실적에서 순수 제미나이 개인 구독(47억→74억 달러)과 자체 API(110억→201억 달러)를 발라내어 클로드·오픈AI와 비교한 인터랙티브 차트 및 심층 근거 리포트" />
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="구글 제미나이, 실제로 돈 얼마나 벌고 있을까?" />
-  <meta property="og:description" content="기존 개인 구독 47억 달러 → 네온 후 74억 달러 · 전체 모델 매출 219억 → 347억 달러. 8개 인터랙티브 차트와 직접 움직이는 시뮬레이터로 한눈에 보기" />
+  <meta property="og:title" content="구글 제미나이, 실제로 돈 얼마나 벌고 있을까? (차트 + 심층 분석)" />
+  <meta property="og:description" content="기존 개인 구독 47억 달러 → 네온 후 74억 달러 · 전체 모델 매출 219억 → 347억 달러. 쉬운 차트 8개·시뮬레이터와 전체 심층 근거 표를 탭으로 한 번에 보기" />
   <style>
     :root {
       --bg: #f6f8fb;
@@ -22,7 +22,9 @@
       --secondary: #e0ebff;
       --secondary-fg: #1d4ed8;
       --success: #059669;
+      --success-bg: #ecfdf5;
       --warning: #d97706;
+      --warning-bg: #fffbeb;
       --error: #dc2626;
       --chart-1: #2563eb;
       --chart-2: #7c3aed;
@@ -32,6 +34,8 @@
       --chart-6: #0d9488;
       --shadow: 0 2px 10px rgba(15, 23, 42, 0.05);
       --tip-shadow: 0 10px 28px rgba(15, 23, 42, 0.16);
+      --tbl-stripe: #f8fafc;
+      --tbl-hl: #eff6ff;
     }
     html.dark {
       --bg: #0b1120;
@@ -46,7 +50,9 @@
       --secondary: #1e293b;
       --secondary-fg: #93c5fd;
       --success: #34d399;
+      --success-bg: rgba(16, 185, 129, 0.12);
       --warning: #fbbf24;
+      --warning-bg: rgba(245, 158, 11, 0.12);
       --error: #f87171;
       --chart-1: #60a5fa;
       --chart-2: #a78bfa;
@@ -56,6 +62,8 @@
       --chart-6: #2dd4bf;
       --shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
       --tip-shadow: 0 10px 28px rgba(0, 0, 0, 0.55);
+      --tbl-stripe: rgba(255, 255, 255, 0.025);
+      --tbl-hl: rgba(96, 165, 250, 0.12);
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
@@ -66,19 +74,19 @@
       color: var(--fg);
       font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       font-size: 14px;
-      line-height: 1.6;
+      line-height: 1.65;
       -webkit-font-smoothing: antialiased;
     }
     .wrap {
-      max-width: 1020px;
+      max-width: 1040px;
       margin: 0 auto;
-      padding: 24px 16px 64px;
+      padding: 22px 16px 68px;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
     @media (min-width: 640px) {
-      .wrap { padding: 32px 24px 72px; }
+      .wrap { padding: 30px 24px 76px; }
     }
     .card {
       background: var(--card);
@@ -150,7 +158,7 @@
     }
     h3 {
       margin: 0;
-      font-size: 14px;
+      font-size: 14.5px;
       font-weight: 700;
     }
     .step-label {
@@ -165,13 +173,67 @@
       color: var(--muted);
       line-height: 1.68;
     }
-    .lead strong, .desc strong { color: var(--fg); }
+    .lead strong, .desc strong, .prose strong { color: var(--fg); }
     .desc {
       margin: 6px 0 0;
       font-size: 13px;
       color: var(--muted);
-      line-height: 1.6;
+      line-height: 1.62;
     }
+
+    /* 메인 모드 전환 스티키 탭 바 */
+    .mode-bar {
+      position: sticky;
+      top: 10px;
+      z-index: 40;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 6px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      box-shadow: 0 6px 20px rgba(15, 23, 42, 0.08);
+    }
+    html.dark .mode-bar {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    }
+    .mode-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.16s ease;
+      text-align: center;
+    }
+    .mode-tab:hover {
+      background: var(--content);
+      color: var(--fg);
+    }
+    .mode-tab[aria-selected="true"] {
+      background: var(--primary);
+      color: var(--primary-fg);
+      border-color: var(--primary);
+    }
+    .mode-tab-title {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+    .mode-tab-sub {
+      font-size: 11.5px;
+      opacity: 0.88;
+    }
+    .tab-panel { display: flex; flex-direction: column; gap: 20px; }
+    .tab-panel[hidden] { display: none; }
+
     .grid-4 {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -216,7 +278,6 @@
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
-      margin-top: 16px;
     }
     .nav-link {
       font-size: 12.5px;
@@ -278,6 +339,85 @@
       background: var(--secondary);
       color: var(--secondary-fg);
     }
+
+    /* 심층 분석 탭 전용 스타일 */
+    .prose {
+      font-size: 13.8px;
+      line-height: 1.72;
+      color: var(--muted);
+    }
+    .prose p { margin: 0 0 10px; }
+    .prose p:last-child { margin-bottom: 0; }
+    .prose ul, .prose ol {
+      margin: 6px 0 0;
+      padding-left: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+    .prose li { color: var(--muted); }
+    .callout {
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.65;
+      border-left: 4px solid var(--primary);
+      background: var(--content);
+      color: var(--fg);
+    }
+    .callout.ok {
+      border-left-color: var(--success);
+      background: var(--success-bg);
+    }
+    .callout.warn {
+      border-left-color: var(--warning);
+      background: var(--warning-bg);
+    }
+    .tbl-wrap {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12.8px;
+      min-width: 620px;
+    }
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    th {
+      background: var(--content);
+      color: var(--fg);
+      font-weight: 700;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    tbody tr:nth-child(even) { background: var(--tbl-stripe); }
+    tbody tr.hl { background: var(--tbl-hl); font-weight: 600; }
+    tbody tr:last-child td { border-bottom: none; }
+    .num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+    .ctr { text-align: center; }
+    .formula-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 12.5px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      color: var(--fg);
+      overflow-x: auto;
+    }
     .tooltip-box {
       position: fixed;
       pointer-events: none;
@@ -299,7 +439,7 @@
       font-size: 12px;
       color: var(--muted);
       padding-top: 6px;
-      line-height: 1.6;
+      line-height: 1.65;
     }
   </style>
 </head>
@@ -307,7 +447,7 @@
   <div id="tooltip" class="tooltip-box"></div>
 
   <div class="wrap">
-    <!-- 헤더 -->
+    <!-- 공통 헤더 -->
     <header class="card">
       <div class="row-between">
         <span class="badge">2026년 11월 26일 기준 · 알파벳 3분기 확정실적 &amp; 네온 출시 8일 차 반영</span>
@@ -321,7 +461,7 @@
         <strong>제미나이 4 네온 효과와 API 가격 인상이 붙으면 약 347억 달러</strong>까지 올라갈 수 있다는 답이 나옵니다.
       </p>
 
-      <!-- 핵심 숫자 4개 -->
+      <!-- 공통 핵심 숫자 4개 -->
       <div class="grid-4">
         <div class="subcard">
           <div class="kpi-label">기존 제미나이 개인 구독</div>
@@ -344,8 +484,24 @@
           <div class="kpi-sub">클로드의 27% · 오픈AI의 44%</div>
         </div>
       </div>
+    </header>
 
-      <!-- 빠른 이동 -->
+    <!-- 상단 메인 전환 탭 바 (스티키) -->
+    <div id="mode-bar" class="mode-bar" role="tablist" aria-label="보기 방식 선택">
+      <button id="tab-easy" class="mode-tab" role="tab" aria-selected="true" aria-controls="panel-easy" type="button">
+        <span class="mode-tab-title">한눈에 보기 (쉬운 차트)</span>
+        <span class="mode-tab-sub">차트 8개 · 직접 움직이는 시뮬레이터</span>
+      </button>
+      <button id="tab-detail" class="mode-tab" role="tab" aria-selected="false" aria-controls="panel-detail" type="button">
+        <span class="mode-tab-title">자세히 보기 (심층 근거·표)</span>
+        <span class="mode-tab-sub">계산식 · 3중 교차검증 · 전체 시계열 표</span>
+      </button>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- 탭 1: 한눈에 보기 (쉬운 차트 버전) -->
+    <!-- ================================================================== -->
+    <div id="panel-easy" class="tab-panel" role="tabpanel" aria-labelledby="tab-easy">
       <nav class="nav-bar">
         <a href="#sec-1" class="nav-link">1. 3사 크기 비교</a>
         <a href="#sec-2" class="nav-link">2. 구독 바구니 쪼개기</a>
@@ -353,302 +509,889 @@
         <a href="#sec-4" class="nav-link">4. 네온 시뮬레이터</a>
         <a href="#sec-5" class="nav-link">5. API·클라우드 분해</a>
       </nav>
-    </header>
 
-    <!-- 섹션 1: 3사 비교 -->
-    <section id="sec-1" class="card stack">
-      <div class="row-start">
-        <div>
-          <div class="step-label">STEP 1 · 결론부터 눈으로 보기</div>
-          <h2>구글 vs 오픈AI vs 클로드, 모델 매출 체급 비교</h2>
-          <p class="desc">
-            각 회사가 <strong>구독료</strong>와 <strong>API 사용료</strong>로 1년에 버는 돈(연환산)을 나란히 세웠습니다. 막대에 마우스를 올리거나 터치해 보세요.
-          </p>
-        </div>
-        <div class="btn-group">
-          <button id="btn-comp-now" class="pill-btn" aria-pressed="true" type="button">현재 3분기 기준</button>
-          <button id="btn-comp-post" class="pill-btn" aria-pressed="false" type="button">네온·가격인상 반영 후</button>
-        </div>
-      </div>
-
-      <div id="chart-comp" class="chart-wrap"></div>
-
-      <div class="grid-3">
-        <div class="subcard">
-          <h3>클로드 (Anthropic) · 810억 달러</h3>
-          <p class="desc">기업용 코딩 API가 전체의 79%(640억)를 끌고 가는 압도적 1위입니다. 10월 말 실측 기준입니다.</p>
-        </div>
-        <div class="subcard">
-          <h3>오픈AI (OpenAI) · 500억 달러</h3>
-          <p class="desc">유료 구독자 5,000만 명 이상(220억)과 API·기업(270억)이 균형을 이룹니다. (파트너 포함 총액 약 680~700억)</p>
-        </div>
-        <div class="subcard">
-          <h3>구글 제미나이 · 219 → 347억 달러</h3>
-          <p class="desc">단가가 싸서 매출은 3위지만, 네온 흥행과 12~1월 API 가격 정상화가 붙으면 오픈AI 현재 체급의 70%까지 뜁니다.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 섹션 2: 구독 바구니 쪼개기 -->
-    <section id="sec-2" class="card stack">
-      <div>
-        <div class="step-label">STEP 2 · 섞여 있는 구독 매출 발라내기</div>
-        <h2>성장률이 꺾여 보인 이유와 '진짜 제미나이 구독' 47억 달러</h2>
-        <p class="desc">
-          구글이 분기마다 발표하는 '구독·앱장터·기기' 성장률이 최근 19%→15%→11%로 내려왔습니다.
-          제미나이가 안 팔려서가 아니라 <strong>2026년 6월 앱장터 수수료를 반토막 낸 착시</strong> 때문입니다.
-        </p>
-      </div>
-
-      <div class="grid-2">
-        <div class="subcard stack-sm">
-          <div class="row-between">
-            <h3>구독·앱장터·기기 분기 매출 &amp; 성장률</h3>
-            <span style="font-size:12px" class="muted">공식 10-Q 실측</span>
+      <!-- 섹션 1: 3사 비교 -->
+      <section id="sec-1" class="card stack">
+        <div class="row-start">
+          <div>
+            <div class="step-label">STEP 1 · 결론부터 눈으로 보기</div>
+            <h2>구글 vs 오픈AI vs 클로드, 모델 매출 체급 비교</h2>
+            <p class="desc">
+              각 회사가 <strong>구독료</strong>와 <strong>API 사용료</strong>로 1년에 버는 돈(연환산)을 나란히 세웠습니다. 막대에 마우스를 올리거나 터치해 보세요.
+            </p>
           </div>
-          <div id="chart-spd-trend" class="chart-wrap"></div>
-          <p class="desc" style="margin:0">
-            매출 덩치는 <strong>87억 → 143억 달러</strong>로 계속 커졌지만, 6월부터 미국·유럽 플레이스토어 수수료를 30%→15%로 깎아 성장률이 눌러졌습니다.
-          </p>
-        </div>
-
-        <div class="subcard stack-sm">
-          <div class="row-between">
-            <h3>연 약 542억 달러 바구니 쪼개기</h3>
-            <span style="font-size:12px" class="muted">다른 사업 다 빼고 남는 돈</span>
+          <div class="btn-group">
+            <button id="btn-comp-now" class="pill-btn" aria-pressed="true" type="button">현재 3분기 기준</button>
+            <button id="btn-comp-post" class="pill-btn" aria-pressed="false" type="button">네온·가격인상 반영 후</button>
           </div>
-          <div id="chart-spd-split" class="chart-wrap"></div>
-          <p class="desc" style="margin:0">
-            유튜브(220억)·앱장터(108억)·픽셀폰(112억)·단순 사진저장(49억)을 다 빼면 <strong>제미나이 개인 구독은 약 47억 달러</strong>(유료 3,085만 명)로 딱 떨어집니다.
-          </p>
         </div>
-      </div>
 
-      <div class="subcard">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px">기존 제미나이 개인 구독 47억 달러의 속살 (3분기 말 · 네온 출시 전)</div>
+        <div id="chart-comp" class="chart-wrap"></div>
+
         <div class="grid-3">
-          <div class="inner-card">
-            <div class="row-between">
-              <strong>AI Plus (보급형)</strong>
-              <span class="tag-price">월 $4.99</span>
-            </div>
-            <div style="margin-top:8px;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums">6.8억 달러 <span style="font-size:12px;font-weight:500" class="muted">/ 1,500만 명</span></div>
-            <div class="desc" style="margin-top:4px;font-size:12px">6월 가격 인하로 라이트·신흥국 유저 대거 유입</div>
+          <div class="subcard">
+            <h3>클로드 (Anthropic) · 810억 달러</h3>
+            <p class="desc">기업용 코딩 API가 전체의 79%(640억)를 끌고 가는 압도적 1위입니다. 10월 말 실측 기준입니다.</p>
           </div>
-          <div class="inner-card">
-            <div class="row-between">
-              <strong>AI Pro (주력)</strong>
-              <span class="tag-price">월 $19.99</span>
-            </div>
-            <div style="margin-top:8px;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums">27.0억 달러 <span style="font-size:12px;font-weight:500" class="muted">/ 1,500만 명</span></div>
-            <div class="desc" style="margin-top:4px;font-size:12px">5TB 저장공간+지메일·문서 AI 통합 (무료체험 제외)</div>
+          <div class="subcard">
+            <h3>오픈AI (OpenAI) · 500억 달러</h3>
+            <p class="desc">유료 구독자 5,000만 명 이상(220억)과 API·기업(270억)이 균형을 이룹니다. (파트너 포함 총액 약 680~700억)</p>
           </div>
-          <div class="inner-card">
-            <div class="row-between">
-              <strong>AI Ultra (전문가)</strong>
-              <span class="tag-price">월 $99~199</span>
-            </div>
-            <div style="margin-top:8px;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums">12.7억 달러 <span style="font-size:12px;font-weight:500" class="muted">/ 85만 명</span></div>
-            <div class="desc" style="margin-top:4px;font-size:12px">인원은 적지만 단가가 8배 높아 알짜 매출원</div>
+          <div class="subcard">
+            <h3>구글 제미나이 · 219 → 347억 달러</h3>
+            <p class="desc">단가가 싸서 매출은 3위지만, 네온 흥행과 12~1월 API 가격 정상화가 붙으면 오픈AI 현재 체급의 70%까지 뜁니다.</p>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- 섹션 3: 네온 출시 직후 실측 -->
-    <section id="sec-3" class="card stack">
-      <div>
-        <div class="step-label">STEP 3 · 제미나이 4 네온(11/18) 실제 반응 확인</div>
-        <h2>일반 앱은 천천히 상승, 개발자 시장은 즉각 폭발</h2>
-        <p class="desc">
-          "진짜 사람들이 몰리고 있나?"를 감이 아니라 <strong>11월 1일~24일 실제 앱 사용자(Sensor Tower)와 개발자 도구(npm · OpenRouter)</strong> 숫자로 확인했습니다.
-        </p>
-      </div>
-
-      <div class="grid-2">
-        <div class="subcard stack-sm">
-          <div class="row-between">
-            <h3>모바일 매일 사용자(DAU) 움직임</h3>
-            <div class="btn-group">
-              <button id="btn-st-nov-ww" class="pill-btn" aria-pressed="true" type="button">11월 글로벌</button>
-              <button id="btn-st-nov-us" class="pill-btn" aria-pressed="false" type="button">11월 미국</button>
-              <button id="btn-st-14m" class="pill-btn" aria-pressed="false" type="button">1년 3사 비교</button>
-            </div>
-          </div>
-          <div id="chart-st" class="chart-wrap"></div>
-          <p id="st-caption" class="desc" style="margin:0"></p>
-        </div>
-
-        <div class="subcard stack-sm">
-          <div class="row-between">
-            <h3>개발자 반응: SDK 다운로드 &amp; 결제 점유율</h3>
-            <div class="btn-group">
-              <button id="btn-dev-npm" class="pill-btn" aria-pressed="true" type="button">주간 SDK 추이</button>
-              <button id="btn-dev-or" class="pill-btn" aria-pressed="false" type="button">오픈라우터 지출</button>
-            </div>
-          </div>
-          <div id="chart-dev" class="chart-wrap"></div>
-          <p id="dev-caption" class="desc" style="margin:0"></p>
-        </div>
-      </div>
-
-      <div class="grid-2">
-        <div class="subcard">
-          <div class="c-success" style="font-weight:700;font-size:13px">폭발 포인트: 가성비 1위 + 12월 2일 빗장 해제</div>
-          <p class="desc">
-            네온은 코딩 실력 1위(CursorBench 65.4%)면서 작업 비용은 클로드의 <strong>4분의 1</strong>입니다.
-            12월 2일부터 제미나이 구독을 외부 코딩 툴에서도 쓸 수 있게 풀면 개발자들의 <strong>AI Ultra($99~199)</strong> 이동이 본격화됩니다.
-          </p>
-        </div>
-        <div class="subcard">
-          <div class="c-warning" style="font-weight:700;font-size:13px">아직 남은 약점: 미국 단골률과 코딩 격차</div>
-          <p class="desc">
-            매일 다시 찾아오는 단골률은 제미나이 <strong>23.3%</strong>로 챗GPT(44.3%)의 절반이고,
-            돈이 몰리는 미국 일사용자(827만 명)도 챗GPT(5,365만)의 15% 수준이라 대중 구독이 하루아침에 뒤집히진 않습니다.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 섹션 4: 인터랙티브 시뮬레이터 -->
-    <section id="sec-4" class="card stack">
-      <div class="row-start">
+      <!-- 섹션 2: 구독 바구니 쪼개기 -->
+      <section id="sec-2" class="card stack">
         <div>
-          <div class="step-label">STEP 4 · 직접 조절해 보는 시나리오</div>
-          <h2>제미나이 4 네온으로 구독 매출이 얼마나 더 붙을까?</h2>
+          <div class="step-label">STEP 2 · 섞여 있는 구독 매출 발라내기</div>
+          <h2>성장률이 꺾여 보인 이유와 '진짜 제미나이 구독' 47억 달러</h2>
           <p class="desc">
-            버튼을 누르거나 슬라이더를 움직여 보세요. <strong>고가 Ultra(월 100~200달러) 가입자 100만 명</strong>이 전체 매출을 얼마나 세게 끌어올리는지 바로 보입니다.
-          </p>
-        </div>
-        <div class="btn-group">
-          <button id="sim-low" class="pill-btn" aria-pressed="false" type="button">보수적</button>
-          <button id="sim-base" class="pill-btn" aria-pressed="true" type="button">기준 (추천)</button>
-          <button id="sim-high" class="pill-btn" aria-pressed="false" type="button">낙관적</button>
-        </div>
-      </div>
-
-      <div class="sim-grid">
-        <div class="subcard stack-sm">
-          <div class="slider-item">
-            <div class="slider-head">
-              <label for="sl-plus"><strong>신규 AI Plus</strong> (실효 $3.8/월)</label>
-              <span id="val-plus" style="font-weight:700;font-variant-numeric:tabular-nums">+500만 명</span>
-            </div>
-            <input id="sl-plus" type="range" min="1" max="15" step="0.5" value="5" />
-          </div>
-          <div class="slider-item">
-            <div class="slider-head">
-              <label for="sl-pro"><strong>신규 AI Pro</strong> (실효 $13.5/월)</label>
-              <span id="val-pro" style="font-weight:700;font-variant-numeric:tabular-nums">+750만 명</span>
-            </div>
-            <input id="sl-pro" type="range" min="1" max="20" step="0.5" value="7.5" />
-          </div>
-          <div class="slider-item">
-            <div class="slider-head">
-              <label for="sl-ultra"><strong>신규 AI Ultra</strong> (실효 $120/월)</label>
-              <span id="val-ultra" style="font-weight:700;font-variant-numeric:tabular-nums">+90만 명</span>
-            </div>
-            <input id="sl-ultra" type="range" min="0.1" max="3.0" step="0.1" value="0.9" />
-          </div>
-
-          <div class="sim-total">
-            <div>
-              <div class="kpi-label">추가되는 1년 매출</div>
-              <div id="sim-add-rev" class="c-success" style="font-size:19px;font-weight:800;font-variant-numeric:tabular-nums">+27.4억 달러</div>
-            </div>
-            <div>
-              <div class="kpi-label">네온 후 개인 구독</div>
-              <div id="sim-tot-rev" style="font-size:19px;font-weight:800;font-variant-numeric:tabular-nums">74.0억 달러</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="subcard">
-          <div id="chart-sim" class="chart-wrap"></div>
-          <p id="sim-note" class="desc" style="margin-top:8px"></p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 섹션 5: API & 클라우드 분해 -->
-    <section id="sec-5" class="card stack">
-      <div>
-        <div class="step-label">STEP 5 · 진짜 승부처는 API와 기업 클라우드</div>
-        <h2>분당 320억 토큰 폭증과 구글 클라우드 1,228억 달러 해부</h2>
-        <p class="desc">
-          개인 구독이 74억 달러까지 커져도 진짜 큰돈은 <strong>기업들이 쓰는 API 사용료(110억 → 201억 달러)</strong>에서 나옵니다.
-          서로 다른 3가지 방법으로 계산해 봐도 3분기 API 매출은 <strong>약 110억~123억 달러</strong>로 딱 모입니다.
-        </p>
-      </div>
-
-      <div class="grid-2">
-        <div class="subcard stack-sm">
-          <div class="row-between">
-            <h3>구글 공식 분당 API 토큰 처리량</h3>
-            <span class="c-success" style="font-size:12px;font-weight:700">1년 만에 4.6배</span>
-          </div>
-          <div id="chart-tokens" class="chart-wrap"></div>
-          <p class="desc" style="margin:0">
-            분당 320억 토큰 = 1년에 <strong>16,819조 토큰</strong>입니다. 유료 비중(72%) × 할인 후 실효 단가($0.91/100만)를 곱하면 <strong>연 110억 달러</strong>이고, 12~1월 2배 가격 인상+450억 토큰이 붙으면 <strong>약 201억 달러</strong>로 뜁니다.
+            구글이 분기마다 발표하는 '구독·앱장터·기기' 성장률이 최근 19%→15%→11%로 내려왔습니다.
+            제미나이가 안 팔려서가 아니라 <strong>2026년 6월 앱장터 수수료를 반토막 낸 착시</strong> 때문입니다.
           </p>
         </div>
 
-        <div class="subcard stack-sm">
-          <div class="row-between">
-            <h3>구글 클라우드 1,228억 달러(3분기 연율) 분해</h3>
-            <span style="font-size:12px" class="muted">순수 모델 몫 발라내기</span>
+        <div class="grid-2">
+          <div class="subcard stack-sm">
+            <div class="row-between">
+              <h3>구독·앱장터·기기 분기 매출 &amp; 성장률</h3>
+              <span style="font-size:12px" class="muted">공식 10-Q 실측</span>
+            </div>
+            <div id="chart-spd-trend" class="chart-wrap"></div>
+            <p class="desc" style="margin:0">
+              매출 덩치는 <strong>87억 → 143억 달러</strong>로 계속 커졌지만, 6월부터 미국·유럽 플레이스토어 수수료를 30%→15%로 깎아 성장률이 눌러졌습니다.
+            </p>
           </div>
-          <div id="chart-cloud-split" class="chart-wrap"></div>
-          <p class="desc" style="margin:0">
-            클라우드가 1년 새 2배(+103%) 커진 데는 <strong>클로드 등 타사 임대(375억)와 외부 TPU 칩 판매(120억)</strong>가 큽니다. 이를 다 덜어내면 순수 제미나이 API 몫은 <strong>약 123억 달러</strong>로 토큰 계산(110억)과 일치합니다.
+
+          <div class="subcard stack-sm">
+            <div class="row-between">
+              <h3>연 약 542억 달러 바구니 쪼개기</h3>
+              <span style="font-size:12px" class="muted">다른 사업 다 빼고 남는 돈</span>
+            </div>
+            <div id="chart-spd-split" class="chart-wrap"></div>
+            <p class="desc" style="margin:0">
+              유튜브(220억)·앱장터(108억)·픽셀폰(112억)·단순 사진저장(49억)을 다 빼면 <strong>제미나이 개인 구독은 약 47억 달러</strong>(유료 3,085만 명)로 딱 떨어집니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="subcard">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px">기존 제미나이 개인 구독 47억 달러의 속살 (3분기 말 · 네온 출시 전)</div>
+          <div class="grid-3">
+            <div class="inner-card">
+              <div class="row-between">
+                <strong>AI Plus (보급형)</strong>
+                <span class="tag-price">월 $4.99</span>
+              </div>
+              <div style="margin-top:8px;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums">6.8억 달러 <span style="font-size:12px;font-weight:500" class="muted">/ 1,500만 명</span></div>
+              <div class="desc" style="margin-top:4px;font-size:12px">6월 가격 인하로 라이트·신흥국 유저 대거 유입</div>
+            </div>
+            <div class="inner-card">
+              <div class="row-between">
+                <strong>AI Pro (주력)</strong>
+                <span class="tag-price">월 $19.99</span>
+              </div>
+              <div style="margin-top:8px;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums">27.0억 달러 <span style="font-size:12px;font-weight:500" class="muted">/ 1,500만 명</span></div>
+              <div class="desc" style="margin-top:4px;font-size:12px">5TB 저장공간+지메일·문서 AI 통합 (무료체험 제외)</div>
+            </div>
+            <div class="inner-card">
+              <div class="row-between">
+                <strong>AI Ultra (전문가)</strong>
+                <span class="tag-price">월 $99~199</span>
+              </div>
+              <div style="margin-top:8px;font-size:17px;font-weight:800;font-variant-numeric:tabular-nums">12.7억 달러 <span style="font-size:12px;font-weight:500" class="muted">/ 85만 명</span></div>
+              <div class="desc" style="margin-top:4px;font-size:12px">인원은 적지만 단가가 8배 높아 알짜 매출원</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 섹션 3: 네온 출시 직후 실측 -->
+      <section id="sec-3" class="card stack">
+        <div>
+          <div class="step-label">STEP 3 · 제미나이 4 네온(11/18) 실제 반응 확인</div>
+          <h2>일반 앱은 천천히 상승, 개발자 시장은 즉각 폭발</h2>
+          <p class="desc">
+            "진짜 사람들이 몰리고 있나?"를 감이 아니라 <strong>11월 1일~24일 실제 앱 사용자(Sensor Tower)와 개발자 도구(npm · OpenRouter)</strong> 숫자로 확인했습니다.
           </p>
         </div>
-      </div>
 
-      <div class="subcard">
-        <div style="font-size:13px;font-weight:700;margin-bottom:10px">왜 3분기 제미나이 API 매출 110억~120억 달러를 믿을 수 있나? (3가지 독립 검증 일치)</div>
-        <div class="grid-3">
-          <div class="inner-card">
-            <div class="kpi-label">방법 ① 토큰 수 × 실효 단가</div>
-            <div style="font-size:18px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums">110억 달러</div>
-            <div class="kpi-sub">공식 분당 320억 토큰 기반</div>
+        <div class="grid-2">
+          <div class="subcard stack-sm">
+            <div class="row-between">
+              <h3>모바일 매일 사용자(DAU) 움직임</h3>
+              <div class="btn-group">
+                <button id="btn-st-nov-ww" class="pill-btn" aria-pressed="true" type="button">11월 글로벌</button>
+                <button id="btn-st-nov-us" class="pill-btn" aria-pressed="false" type="button">11월 미국</button>
+                <button id="btn-st-14m" class="pill-btn" aria-pressed="false" type="button">1년 3사 비교</button>
+              </div>
+            </div>
+            <div id="chart-st" class="chart-wrap"></div>
+            <p id="st-caption" class="desc" style="margin:0"></p>
           </div>
-          <div class="inner-card">
-            <div class="kpi-label">방법 ② 경쟁사 매출 × 점유율</div>
-            <div style="font-size:18px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums">105~130억 달러</div>
-            <div class="kpi-sub">오픈라우터·SDK 비중 + 단가 보정</div>
-          </div>
-          <div class="inner-card">
-            <div class="kpi-label">방법 ③ 클라우드 전체에서 역산</div>
-            <div style="font-size:18px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums">123억 달러</div>
-            <div class="kpi-sub">1,228억에서 딴 사업 차감</div>
-          </div>
-        </div>
-      </div>
-    </section>
 
-    <!-- 섹션 6: 4가지 신호등 -->
-    <section class="card stack-sm">
-      <h2 style="margin:0">앞으로 이 추정이 맞는지 확인하는 4가지 신호등</h2>
-      <div class="grid-4" style="margin-top:6px">
-        <div class="subcard">
-          <div class="c-primary" style="font-weight:700;font-size:13px">① 12월 1일·1월 1일 가격 인상 후</div>
-          <p class="desc">API 단가가 2배 올라도 오픈라우터 요청 비중이 <strong>15% 이상</strong> 버티면 API 200억 달러 안착</p>
+          <div class="subcard stack-sm">
+            <div class="row-between">
+              <h3>개발자 반응: SDK 다운로드 &amp; 결제 점유율</h3>
+              <div class="btn-group">
+                <button id="btn-dev-npm" class="pill-btn" aria-pressed="true" type="button">주간 SDK 추이</button>
+                <button id="btn-dev-or" class="pill-btn" aria-pressed="false" type="button">오픈라우터 지출</button>
+              </div>
+            </div>
+            <div id="chart-dev" class="chart-wrap"></div>
+            <p id="dev-caption" class="desc" style="margin:0"></p>
+          </div>
         </div>
-        <div class="subcard">
-          <div class="c-primary" style="font-weight:700;font-size:13px">② 12월 2일 코딩 툴 개방 직후</div>
-          <p class="desc">오픈라우터 코딩 지출(현재 4.4%)이 <strong>10% 이상</strong> 뛰면 고가 AI Ultra 구독 폭발</p>
+
+        <div class="grid-2">
+          <div class="subcard">
+            <div class="c-success" style="font-weight:700;font-size:13px">폭발 포인트: 가성비 1위 + 12월 2일 빗장 해제</div>
+            <p class="desc">
+              네온은 코딩 실력 1위(CursorBench 65.4%)면서 작업 비용은 클로드의 <strong>4분의 1</strong>입니다.
+              12월 2일부터 제미나이 구독을 외부 코딩 툴에서도 쓸 수 있게 풀면 개발자들의 <strong>AI Ultra($99~199)</strong> 이동이 본격화됩니다.
+            </p>
+          </div>
+          <div class="subcard">
+            <div class="c-warning" style="font-weight:700;font-size:13px">아직 남은 약점: 미국 단골률과 코딩 격차</div>
+            <p class="desc">
+              매일 다시 찾아오는 단골률은 제미나이 <strong>23.3%</strong>로 챗GPT(44.3%)의 절반이고,
+              돈이 몰리는 미국 일사용자(827만 명)도 챗GPT(5,365만)의 15% 수준이라 대중 구독이 하루아침에 뒤집히진 않습니다.
+            </p>
+          </div>
         </div>
-        <div class="subcard">
-          <div class="c-primary" style="font-weight:700;font-size:13px">③ 미국 앱 사용자 &amp; 단골률</div>
-          <p class="desc">미국 매일 사용자가 <strong>827만→1,000만 명</strong>을 넘겨야 대중 구독 전환이 본궤도</p>
+      </section>
+
+      <!-- 섹션 4: 인터랙티브 시뮬레이터 -->
+      <section id="sec-4" class="card stack">
+        <div class="row-start">
+          <div>
+            <div class="step-label">STEP 4 · 직접 조절해 보는 시나리오</div>
+            <h2>제미나이 4 네온으로 구독 매출이 얼마나 더 붙을까?</h2>
+            <p class="desc">
+              버튼을 누르거나 슬라이더를 움직여 보세요. <strong>고가 Ultra(월 100~200달러) 가입자 100만 명</strong>이 전체 매출을 얼마나 세게 끌어올리는지 바로 보입니다.
+            </p>
+          </div>
+          <div class="btn-group">
+            <button id="sim-low" class="pill-btn" aria-pressed="false" type="button">보수적</button>
+            <button id="sim-base" class="pill-btn" aria-pressed="true" type="button">기준 (추천)</button>
+            <button id="sim-high" class="pill-btn" aria-pressed="false" type="button">낙관적</button>
+          </div>
         </div>
-        <div class="subcard">
-          <div class="c-primary" style="font-weight:700;font-size:13px">④ 2월 초 4분기 실적발표</div>
-          <p class="desc">분당 API 토큰 <strong>450억 돌파</strong> + 구독 부문 성장률 <strong>13~15% 반등</strong> 여부</p>
+
+        <div class="sim-grid">
+          <div class="subcard stack-sm">
+            <div class="slider-item">
+              <div class="slider-head">
+                <label for="sl-plus"><strong>신규 AI Plus</strong> (실효 $3.8/월)</label>
+                <span id="val-plus" style="font-weight:700;font-variant-numeric:tabular-nums">+500만 명</span>
+              </div>
+              <input id="sl-plus" type="range" min="1" max="15" step="0.5" value="5" />
+            </div>
+            <div class="slider-item">
+              <div class="slider-head">
+                <label for="sl-pro"><strong>신규 AI Pro</strong> (실효 $13.5/월)</label>
+                <span id="val-pro" style="font-weight:700;font-variant-numeric:tabular-nums">+750만 명</span>
+              </div>
+              <input id="sl-pro" type="range" min="1" max="20" step="0.5" value="7.5" />
+            </div>
+            <div class="slider-item">
+              <div class="slider-head">
+                <label for="sl-ultra"><strong>신규 AI Ultra</strong> (실효 $120/월)</label>
+                <span id="val-ultra" style="font-weight:700;font-variant-numeric:tabular-nums">+90만 명</span>
+              </div>
+              <input id="sl-ultra" type="range" min="0.1" max="3.0" step="0.1" value="0.9" />
+            </div>
+
+            <div class="sim-total">
+              <div>
+                <div class="kpi-label">추가되는 1년 매출</div>
+                <div id="sim-add-rev" class="c-success" style="font-size:19px;font-weight:800;font-variant-numeric:tabular-nums">+27.4억 달러</div>
+              </div>
+              <div>
+                <div class="kpi-label">네온 후 개인 구독</div>
+                <div id="sim-tot-rev" style="font-size:19px;font-weight:800;font-variant-numeric:tabular-nums">74.0억 달러</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="subcard">
+            <div id="chart-sim" class="chart-wrap"></div>
+            <p id="sim-note" class="desc" style="margin-top:8px"></p>
+          </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- 섹션 5: API & 클라우드 분해 -->
+      <section id="sec-5" class="card stack">
+        <div>
+          <div class="step-label">STEP 5 · 진짜 승부처는 API와 기업 클라우드</div>
+          <h2>분당 320억 토큰 폭증과 구글 클라우드 1,228억 달러 해부</h2>
+          <p class="desc">
+            개인 구독이 74억 달러까지 커져도 진짜 큰돈은 <strong>기업들이 쓰는 API 사용료(110억 → 201억 달러)</strong>에서 나옵니다.
+            서로 다른 3가지 방법으로 계산해 봐도 3분기 API 매출은 <strong>약 110억~123억 달러</strong>로 딱 모입니다.
+          </p>
+        </div>
+
+        <div class="grid-2">
+          <div class="subcard stack-sm">
+            <div class="row-between">
+              <h3>구글 공식 분당 API 토큰 처리량</h3>
+              <span class="c-success" style="font-size:12px;font-weight:700">1년 만에 4.6배</span>
+            </div>
+            <div id="chart-tokens" class="chart-wrap"></div>
+            <p class="desc" style="margin:0">
+              분당 320억 토큰 = 1년에 <strong>16,819조 토큰</strong>입니다. 유료 비중(72%) × 할인 후 실효 단가($0.91/100만)를 곱하면 <strong>연 110억 달러</strong>이고, 12~1월 2배 가격 인상+450억 토큰이 붙으면 <strong>약 201억 달러</strong>로 뜁니다.
+            </p>
+          </div>
+
+          <div class="subcard stack-sm">
+            <div class="row-between">
+              <h3>구글 클라우드 1,228억 달러(3분기 연율) 분해</h3>
+              <span style="font-size:12px" class="muted">순수 모델 몫 발라내기</span>
+            </div>
+            <div id="chart-cloud-split" class="chart-wrap"></div>
+            <p class="desc" style="margin:0">
+              클라우드가 1년 새 2배(+103%) 커진 데는 <strong>클로드 등 타사 임대(375억)와 외부 TPU 칩 판매(120억)</strong>가 큽니다. 이를 다 덜어내면 순수 제미나이 API 몫은 <strong>약 123억 달러</strong>로 토큰 계산(110억)과 일치합니다.
+            </p>
+          </div>
+        </div>
+
+        <div class="subcard">
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px">왜 3분기 제미나이 API 매출 110억~120억 달러를 믿을 수 있나? (3가지 독립 검증 일치)</div>
+          <div class="grid-3">
+            <div class="inner-card">
+              <div class="kpi-label">방법 ① 토큰 수 × 실효 단가</div>
+              <div style="font-size:18px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums">110억 달러</div>
+              <div class="kpi-sub">공식 분당 320억 토큰 기반</div>
+            </div>
+            <div class="inner-card">
+              <div class="kpi-label">방법 ② 경쟁사 매출 × 점유율</div>
+              <div style="font-size:18px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums">105~130억 달러</div>
+              <div class="kpi-sub">오픈라우터·SDK 비중 + 단가 보정</div>
+            </div>
+            <div class="inner-card">
+              <div class="kpi-label">방법 ③ 클라우드 전체에서 역산</div>
+              <div style="font-size:18px;font-weight:800;margin-top:4px;font-variant-numeric:tabular-nums">123억 달러</div>
+              <div class="kpi-sub">1,228억에서 딴 사업 차감</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 섹션 6: 4가지 신호등 -->
+      <section class="card stack-sm">
+        <h2 style="margin:0">앞으로 이 추정이 맞는지 확인하는 4가지 신호등</h2>
+        <div class="grid-4" style="margin-top:6px">
+          <div class="subcard">
+            <div class="c-primary" style="font-weight:700;font-size:13px">① 12월 1일·1월 1일 가격 인상 후</div>
+            <p class="desc">API 단가가 2배 올라도 오픈라우터 요청 비중이 <strong>15% 이상</strong> 버티면 API 200억 달러 안착</p>
+          </div>
+          <div class="subcard">
+            <div class="c-primary" style="font-weight:700;font-size:13px">② 12월 2일 코딩 툴 개방 직후</div>
+            <p class="desc">오픈라우터 코딩 지출(현재 4.4%)이 <strong>10% 이상</strong> 뛰면 고가 AI Ultra 구독 폭발</p>
+          </div>
+          <div class="subcard">
+            <div class="c-primary" style="font-weight:700;font-size:13px">③ 미국 앱 사용자 &amp; 단골률</div>
+            <p class="desc">미국 매일 사용자가 <strong>827만→1,000만 명</strong>을 넘겨야 대중 구독 전환이 본궤도</p>
+          </div>
+          <div class="subcard">
+            <div class="c-primary" style="font-weight:700;font-size:13px">④ 2월 초 4분기 실적발표</div>
+            <p class="desc">분당 API 토큰 <strong>450억 돌파</strong> + 구독 부문 성장률 <strong>13~15% 반등</strong> 여부</p>
+          </div>
+        </div>
+        <div style="text-align:center;padding-top:8px">
+          <button id="jump-to-detail" class="theme-btn" style="padding:8px 16px;font-size:13px" type="button">자세한 계산 근거·전체 표 보러 가기 →</button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ================================================================== -->
+    <!-- 탭 2: 자세히 보기 (심층 근거·표 버전) -->
+    <!-- ================================================================== -->
+    <div id="panel-detail" class="tab-panel" role="tabpanel" aria-labelledby="tab-detail" hidden>
+      <nav class="nav-bar">
+        <a href="#det-1" class="nav-link">1. 핵심 요약표</a>
+        <a href="#det-2" class="nav-link">2. 돈의 흐름 구조</a>
+        <a href="#det-3" class="nav-link">3. 구독·SPD 분해</a>
+        <a href="#det-4" class="nav-link">4. 네온 시나리오·실측</a>
+        <a href="#det-5" class="nav-link">5. API 3중 교차검증</a>
+        <a href="#det-6" class="nav-link">6. 3사 정밀 대조·통찰</a>
+        <a href="#det-7" class="nav-link">7. 4대 검증 지표</a>
+      </nav>
+
+      <!-- 심층 1: 핵심 요약표 -->
+      <section id="det-1" class="card stack">
+        <div>
+          <div class="step-label">DETAIL 1 · 총괄 요약표</div>
+          <h2>구글 제미나이 모델 매출 총괄 추정 (확장 기준 vs 엄격 기준)</h2>
+          <p class="desc">
+            구글의 순수 제미나이 모델 관련 연간 환산 매출(ARR)은 2026년 3분기 말 기준 <strong>약 219억 달러(엄격 기준 180억 달러)</strong>이며,
+            제미나이 4 네온 출시·외부 개발 환경 구독 개방(12월 2일)·API 가격 정상화(12월 1일·1월 1일)가 반영되는 향후 6~12개월 내 <strong>약 347억 달러(보수 274억~낙관 459억 달러)</strong>까지 확대될 잠재력이 있습니다.
+          </p>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>구분 (연간 환산 매출, ARR 기준)</th>
+                <th class="num">기존 (3Q26 말, 네온 전)</th>
+                <th class="num">네온·인상 후 (기준)</th>
+                <th class="num">보수 ~ 낙관 범위</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>① 제미나이 개인 구독</strong> (Google One AI 요금제 총액)</td>
+                <td class="num">47억 달러 <span class="muted">(순증분 40억)</span></td>
+                <td class="num"><strong>74억 달러</strong> <span class="c-success">(+27억)</span></td>
+                <td class="num">60억 ~ 99억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>② 기업용 모델 구독</strong> (Gemini Enterprise + Workspace AI)</td>
+                <td class="num">52억 달러 <span class="muted">(시트 30 + 번들 22)</span></td>
+                <td class="num"><strong>62억 달러</strong> <span class="c-success">(+10억)</span></td>
+                <td class="num">50억 ~ 75억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>③ 대형 모델 라이선스</strong> (애플 시리 맞춤형 제미나이)</td>
+                <td class="num">10억 달러</td>
+                <td class="num"><strong>10억 달러</strong></td>
+                <td class="num">10억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>④ 제미나이 자체 API</strong> (1P Vertex AI · AI Studio)</td>
+                <td class="num">110억 달러 <span class="muted">(분당 320억 토큰)</span></td>
+                <td class="num"><strong>201억 달러</strong> <span class="c-success">(분당 450억+인상)</span></td>
+                <td class="num">154억 ~ 277억 달러</td>
+              </tr>
+              <tr class="hl">
+                <td>구글 순수 모델 관련 매출 합계 (확장 기준)</td>
+                <td class="num">219억 달러</td>
+                <td class="num c-primary">347억 달러</td>
+                <td class="num">274억 ~ 459억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>구글 순수 모델 매출 (엄격 기준)</strong> <span class="muted">스토리지 중복·WS 기본 인상 제외</span></td>
+                <td class="num">180억 달러 <span class="muted">(150억~190억)</span></td>
+                <td class="num"><strong>308억 달러</strong></td>
+                <td class="num">240억 ~ 410억 달러</td>
+              </tr>
+              <tr>
+                <td><em>(대조)</em> <strong>Anthropic 전체 ARR</strong> (2026년 10월 말 실측)</td>
+                <td class="num">810억 달러 <span class="muted">(구독 170 · API 640)</span></td>
+                <td class="num muted">(동적 성장 시 1,000억~1,200억+)</td>
+                <td class="num muted">S-1 3분기 실매출 169.6억</td>
+              </tr>
+              <tr>
+                <td><em>(대조)</em> <strong>OpenAI 전체 ARR</strong> (2026년 9월 말 순매출 기준)</td>
+                <td class="num">500억 달러 <span class="muted">(구독 220 · API 270 · 광고 10)</span></td>
+                <td class="num muted">(동적 성장 시 700억~850억+)</td>
+                <td class="num muted">파트너 포함 총액 680~700억</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 심층 2: 돈의 흐름 구조도 -->
+      <section id="det-2" class="card stack">
+        <div>
+          <div class="step-label">DETAIL 2 · 수익 구조 지도</div>
+          <h2>큰 그림: 구글의 AI 돈줄은 어디에 어떻게 섞여 있는가?</h2>
+          <p class="desc">
+            구글은 AI 모델 매출을 별도로 발표하지 않고 <strong>두 개의 거대한 재무 바구니</strong>에 기존 사업들과 합산해 보고합니다.
+            따라서 전체에서 비(非)제미나이 사업을 공시 근거로 덜어내는 <strong>탑다운(Top-Down)</strong> 방식과, 가입자 수·토큰 수에 단가를 곱해 쌓는 <strong>바텀업(Bottom-Up)</strong> 방식의 교차 검증이 핵심입니다.
+          </p>
+        </div>
+
+        <!-- 자체 SVG 아키텍처 다이어그램 -->
+        <div class="subcard chart-wrap">
+          <svg viewBox="0 0 880 340">
+            <!-- 최상단 -->
+            <rect x="275" y="10" width="330" height="44" rx="10" fill="var(--card)" stroke="var(--border)" stroke-width="1.5"></rect>
+            <text x="440" y="29" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--fg)">알파벳 전체 매출 (3Q26 1,276억 / 연 5,000억+)</text>
+            <text x="440" y="45" text-anchor="middle" font-size="11" fill="var(--muted)">검색·유튜브 광고 등 본업(연 ~3,300억)은 직접 모델 매출 제외</text>
+
+            <!-- 분기선 -->
+            <path d="M 440 54 L 440 74 M 220 74 L 660 74 M 220 74 L 220 92 M 660 74 L 660 92" stroke="var(--muted)" stroke-width="1.5" fill="none"/>
+
+            <!-- 바구니 1 -->
+            <rect x="40" y="92" width="360" height="38" rx="9" fill="var(--secondary)" stroke="var(--primary)" stroke-width="1.4"></rect>
+            <text x="220" y="115" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--secondary-fg)">바구니 1: 구독·플랫폼·기기 SPD (연 약 542~547억)</text>
+
+            <!-- 바구니 2 -->
+            <rect x="480" y="92" width="360" height="38" rx="9" fill="var(--secondary)" stroke="var(--chart-2)" stroke-width="1.4"></rect>
+            <text x="660" y="115" text-anchor="middle" font-size="12.5" font-weight="700" fill="var(--secondary-fg)">바구니 2: 구글 클라우드 (3Q 연율 1,228억)</text>
+
+            <!-- 바구니 1 하위 -->
+            <path d="M 220 130 L 220 148 M 120 148 L 320 148 M 120 148 L 120 164 M 320 148 L 320 164" stroke="var(--border)" stroke-width="1.5" fill="none"/>
+            <rect x="20" y="164" width="200" height="76" rx="9" fill="var(--card)" stroke="var(--border)"></rect>
+            <text x="120" y="184" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--muted)">비(非)AI 사업 덜어내기 (495억)</text>
+            <text x="120" y="201" text-anchor="middle" font-size="11" fill="var(--muted)">• 유튜브 구독: 220억</text>
+            <text x="120" y="216" text-anchor="middle" font-size="11" fill="var(--muted)">• 픽셀·기기 112억 · Play 108억</text>
+            <text x="120" y="231" text-anchor="middle" font-size="11" fill="var(--muted)">• 구글 원 단순 저장공간 등 55억</text>
+
+            <rect x="234" y="164" width="180" height="76" rx="9" fill="var(--card)" stroke="var(--chart-1)" stroke-width="2"></rect>
+            <text x="324" y="185" text-anchor="middle" font-size="11.5" font-weight="800" fill="var(--chart-1)">★ 제미나이 개인 구독</text>
+            <text x="324" y="205" text-anchor="middle" font-size="13" font-weight="800" fill="var(--fg)">기존 47억 → 네온 74억</text>
+            <text x="324" y="224" text-anchor="middle" font-size="10.5" fill="var(--muted)">AI Plus · Pro · Ultra 합산</text>
+
+            <!-- 바구니 2 하위 -->
+            <path d="M 660 130 L 660 148 M 560 148 L 760 148 M 560 148 L 560 164 M 760 148 L 760 164" stroke="var(--border)" stroke-width="1.5" fill="none"/>
+            <rect x="466" y="164" width="188" height="76" rx="9" fill="var(--card)" stroke="var(--border)"></rect>
+            <text x="560" y="184" text-anchor="middle" font-size="11.5" font-weight="700" fill="var(--muted)">비(非)제미나이 덜어내기 (1,043억)</text>
+            <text x="560" y="201" text-anchor="middle" font-size="11" fill="var(--muted)">• 전통 GCP 인프라·보안: 420억</text>
+            <text x="560" y="216" text-anchor="middle" font-size="11" fill="var(--muted)">• 타사 AI 임대(클로드 등): 375억</text>
+            <text x="560" y="231" text-anchor="middle" font-size="11" fill="var(--muted)">• WS 기본 128억 · 외부 TPU 120억</text>
+
+            <rect x="668" y="164" width="192" height="76" rx="9" fill="var(--card)" stroke="var(--chart-2)" stroke-width="2"></rect>
+            <text x="764" y="185" text-anchor="middle" font-size="11.5" font-weight="800" fill="var(--chart-2)">★ 기업 구독·시리·자체 API</text>
+            <text x="764" y="205" text-anchor="middle" font-size="13" font-weight="800" fill="var(--fg)">기존 172억 → 인상 후 273억</text>
+            <text x="764" y="224" text-anchor="middle" font-size="10.5" fill="var(--muted)">API 110→201 · 기업 52→62 · 시리 10</text>
+
+            <!-- 최종 합산 -->
+            <path d="M 324 240 L 324 266 L 440 266 L 440 280 M 764 240 L 764 266 L 440 266" stroke="var(--primary)" stroke-width="2" fill="none"/>
+            <rect x="235" y="280" width="410" height="48" rx="11" fill="var(--primary)"></rect>
+            <text x="440" y="302" text-anchor="middle" font-size="13" font-weight="800" fill="#ffffff">구글 순수 제미나이 모델 매출 합계</text>
+            <text x="440" y="319" text-anchor="middle" font-size="11.5" fill="#e0ebff">3분기 말 219억 달러(엄격 180억)  →  네온·가격인상 후 347억 달러</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- 심층 3: 구독·SPD 분해 -->
+      <section id="det-3" class="card stack">
+        <div>
+          <div class="step-label">DETAIL 3 · 1단계 심층 분해</div>
+          <h2>기존 '구독·플랫폼·기기(SPD)' 분해와 제미나이 개인 구독 분리</h2>
+        </div>
+
+        <div class="prose">
+          <h3>3-1. 공식 분기 실적과 "성장 둔화 착시"의 3가지 원인</h3>
+          <p>
+            알파벳 공식 10-Q/10-K상 구독·플랫폼·기기(SPD) 매출 성장률은 2026년 <strong>1분기 +19.3% → 2분기 +15.3% → 3분기 +11.0%</strong>로 3개 분기 연속 낮아졌습니다.
+            그러나 이는 제미나이 구독 부진이 아니라 아래 3가지 비(非)제미나이 요인이 겹친 결과입니다.
+          </p>
+          <ol>
+            <li><strong>구글 플레이 스토어 수수료 대폭 인하:</strong> 2026년 3월 5일 인앱결제 수수료를 기존 30%에서 최소 15%(구독 10%, 구글 결제망 이용 시 +5%)로 인하 발표 후 <strong>6월부터 미국·EU·영국에 실제 적용</strong>했습니다(9월 호주, 12월 한국·일본 예정). 실제로 3분기 10-Q 원문(MD&amp;A)은 성장 요인을 <em>"구독(유튜브·구글 원)과 기기(픽셀)"</em>로만 적고 플랫폼(Play)을 성장 동인에서 제외했습니다.</li>
+            <li><strong>유튜브 TV 가격 인상 기저효과 소멸:</strong> 2025년 1월 월 $72.99 → $82.99(+13.7%) 인상 효과가 2025년 내내 20%대 성장을 만들다가 2026년 들어 기저효과가 사라졌습니다.</li>
+            <li><strong>AI Plus 가격 인하:</strong> 2026년 1월 28일 $7.99로 35개국 출시했던 보급형 요금제를 6월 9일 <strong>$4.99(-37.5%)</strong>로 내리고 저장공간을 400GB로 늘려 단기 ARPU를 낮췄습니다.</li>
+          </ol>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>기간</th>
+                <th class="num">SPD 공시 매출</th>
+                <th class="num">전년 대비(YoY)</th>
+                <th>공식 발표 유료 구독자 이정표 및 주요 사건</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>2024년 연간</td><td class="num">403.4억 달러</td><td class="num">+16.4%</td><td>2월 구글 원 1억 명 돌파 · 제미나이 어드밴스드($19.99) 출시</td></tr>
+              <tr><td>2025년 1분기</td><td class="num">103.8억 달러</td><td class="num">+18.8%</td><td>전체 유료 구독 2.7억 명 (유튜브 1.25억 · 구글 원 ~1.45억) · YTTV 요금 인상</td></tr>
+              <tr><td>2025년 2분기</td><td class="num">112.0억 달러</td><td class="num">+20.3%</td><td>5월 구글 원 1.5억 명 돌파</td></tr>
+              <tr><td>2025년 3분기</td><td class="num">128.7억 달러</td><td class="num">+20.8%</td><td>제미나이 앱 6.5억 MAU 돌파</td></tr>
+              <tr><td>2025년 4분기</td><td class="num">135.8억 달러</td><td class="num">+16.7%</td><td><strong>전체 유료 구독 3.25억 명</strong> · 2025년 연간 480.3억 · <strong>유튜브 광고+구독 600억 돌파</strong></td></tr>
+              <tr><td>2026년 1분기</td><td class="num">123.8억 달러</td><td class="num">+19.3%</td><td><strong>전체 유료 구독 3.5억 명 돌파</strong> · AI Plus 35개국 출시("소비자 AI 플랜 역대 최대")</td></tr>
+              <tr><td>2026년 2분기</td><td class="num">129.1억 달러</td><td class="num">+15.3%</td><td>제미나이 앱 9.5억 MAU · 6월 AI Plus $4.99 인하 · <strong>6월 미국·유럽 Play 수수료 인하</strong></td></tr>
+              <tr class="hl"><td>2026년 3분기</td><td class="num">142.9억 달러</td><td class="num">+11.0%</td><td><strong>제미나이 앱 10억 MAU</strong> · <strong>유튜브 뮤직·프리미엄 1.5억+ 명</strong> · MD&amp;A에서 Play 제외</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="prose">
+          <h3>3-2. 탑다운(Top-Down) 잔차 vs 바텀업(Bottom-Up) 교차검증</h3>
+          <ul>
+            <li><strong>유튜브 유료 구독 (연 220억 / 3Q 55.3억):</strong> 2025년 유튜브 총매출 600억+(피차이 공식 발언) − 유튜브 광고 403.7억(10-K) = 2025년 유튜브 구독 약 200억. 2026년 3Q 기준 유튜브 뮤직·프리미엄 1.5억 명(유료 약 1.35억 × 월 $6.1 ≈ 99억) + 유튜브 TV 1,000만+(× 월 $81 ≈ 98억) + NFL 선데이 티켓(11억) + 슈퍼챗·멤버십(12억) = 연 <strong>220억 달러</strong>.</li>
+            <li><strong>구글 플레이 순수수료 (연 108~110억 / 3Q 27.5억):</strong> 앱장터 총결제 약 580억 중 6월 수수료 인하 반영 실효 수수료율 ~18.5~19% 적용.</li>
+            <li><strong>기기 판매 (연 112~114억 / 3Q 성수기 33.0억):</strong> 픽셀 연간 약 1,300만 대(× 도매 ASP $630 ≈ 82억) + 워치·버즈·네스트·핏빗(32억).</li>
+            <li><strong>기타 구독 (연 6억 / 3Q 1.5억):</strong> 플레이 패스·네스트 어웨어 등.</li>
+            <li><strong>→ 탑다운 구글 원 전체 잔차:</strong> 연간 기준 <code>547~552억 − 446~450억 = 96억~102억 달러</code> (3Q 단일 분기 25.6억 × 4 = 연율 102.4억).</li>
+          </ul>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>구글 원 세부 등급 (3Q26 말, 무료 체험·통신사 번들 제외)</th>
+                <th class="ctr">미국 정가</th>
+                <th class="num">실효 월 ARPU</th>
+                <th class="num">추정 유료 결제자</th>
+                <th class="num">연환산 매출(기준)</th>
+                <th class="num">보수 ~ 낙관 범위</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>순수 클라우드 저장공간 (Basic 100GB · Standard 200GB · 기존 2TB)</td>
+                <td class="ctr">$1.99 ~ $9.99</td>
+                <td class="num">$2.30</td>
+                <td class="num">1억 7,800만 명</td>
+                <td class="num">49.1억 달러</td>
+                <td class="num">44억 ~ 53억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>① Google AI Plus</strong> (보급형 AI + 400GB)</td>
+                <td class="ctr">$4.99/월</td>
+                <td class="num">$3.80</td>
+                <td class="num">1,500만 명</td>
+                <td class="num">6.8억 달러</td>
+                <td class="num">5.2억 ~ 8.6억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>② Google AI Pro</strong> (주력 AI + 5TB + Workspace 통합)</td>
+                <td class="ctr">$19.99/월</td>
+                <td class="num">$15.00</td>
+                <td class="num">1,500만 명</td>
+                <td class="num">27.0억 달러</td>
+                <td class="num">20.2억 ~ 34.6억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>③ Google AI Ultra</strong> (5배/20배 한도 + 20~30TB + YT 프리미엄)</td>
+                <td class="ctr">$99.99 / $199.99</td>
+                <td class="num">$125.00</td>
+                <td class="num">85만 명</td>
+                <td class="num">12.7억 달러</td>
+                <td class="num">8.3억 ~ 18.6억 달러</td>
+              </tr>
+              <tr class="hl">
+                <td>제미나이 개인 AI 요금제 소계 (총매출 기준)</td>
+                <td class="ctr">—</td>
+                <td class="num">$12.58 (가중)</td>
+                <td class="num">3,085만 명</td>
+                <td class="num c-primary">46.6억 달러</td>
+                <td class="num">33.6억 ~ 61.8억 달러</td>
+              </tr>
+              <tr>
+                <td><strong>구글 원 전체 합계 (저장공간 + AI 요금제)</strong></td>
+                <td class="ctr">—</td>
+                <td class="num">—</td>
+                <td class="num">약 2억 885만 명</td>
+                <td class="num"><strong>95.7억 달러</strong></td>
+                <td class="num">82.8억 ~ 111.0억 달러</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="callout ok">
+          <strong>교차검증 일치:</strong> 탑다운 잔차(<strong>96억~102억 달러</strong>)와 바텀업 합계(<strong>95.7억 달러</strong>)가 5% 이내로 일치합니다.
+          유료 AI 결제자 3,085만 명은 제미나이 앱 10억 MAU 대비 전환율 약 <strong>3.1%</strong>(고가 Pro+Ultra 기준 <strong>1.6%</strong>)이며, 기존 2TB 스토리지($9.99) 업셀 중복 몫(약 6.5억)을 차감한 <strong>순수 AI 증분 개인 구독 매출은 약 40억 달러</strong>입니다.
+        </div>
+      </section>
+
+      <!-- 심층 4: 네온 실측 및 시나리오 -->
+      <section id="det-4" class="card stack">
+        <div>
+          <div class="step-label">DETAIL 4 · 2단계 심층 분석</div>
+          <h2>제미나이 4 네온(11/18 출시) 실측 대체지표와 증분 구독 시나리오</h2>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>실측 대체지표 (출처)</th>
+                <th class="ctr">출시 전 기준</th>
+                <th class="ctr">네온 출시 직후 (11/18~24)</th>
+                <th class="ctr">변화율 / 격차</th>
+                <th>핵심 해석</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>모바일 글로벌 Gemini DAU</strong> (Sensor Tower)</td>
+                <td class="ctr">158.69M (11/1~9)</td>
+                <td class="ctr"><strong>167.61M</strong> (11/24 최고 171.55M)</td>
+                <td class="ctr c-success"><strong>+5.6%</strong></td>
+                <td>3사 점유율 17.75%→17.99% 반등, 대중 앱은 완만한 가속</td>
+              </tr>
+              <tr>
+                <td><strong>모바일 미국 Gemini DAU</strong> (Sensor Tower)</td>
+                <td class="ctr">7.87M (11/1~9)</td>
+                <td class="ctr"><strong>8.27M</strong> (점유 11.93%)</td>
+                <td class="ctr c-success"><strong>+5.1%</strong></td>
+                <td>같은 기간 미국 ChatGPT는 -0.7%(54.0M→53.7M) 정체</td>
+              </tr>
+              <tr>
+                <td><strong>OpenRouter 주간 Google 요청량</strong> (11/22)</td>
+                <td class="ctr">직전 주 기준</td>
+                <td class="ctr">요청 16.1% / <strong>지출 13.0%</strong></td>
+                <td class="ctr c-success"><strong>+24.0% WoW</strong></td>
+                <td>전체 API 지출에서 OpenAI(14.2%) 턱밑 추격</td>
+              </tr>
+              <tr>
+                <td><strong>npm <code>@google/genai</code> SDK</strong> (11/22)</td>
+                <td class="ctr">4,331천 회/일 (18.97%)</td>
+                <td class="ctr"><strong>4,880천 회/일</strong> (19.90%)</td>
+                <td class="ctr c-success"><strong>+12.7% WoW</strong></td>
+                <td>경쟁사(Anthropic +6.1%, OpenAI +6.3%)의 <strong>2배 속도</strong></td>
+              </tr>
+              <tr>
+                <td><strong>코딩 CLI <code>@google/gemini-cli</code></strong> (11/22)</td>
+                <td class="ctr">66.3천 회/일</td>
+                <td class="ctr"><strong>80.7천 회/일</strong></td>
+                <td class="ctr c-success"><strong>+21.8% WoW</strong></td>
+                <td>급반등했으나 Claude Code(317만)·Codex(394만) 대비 2.5%</td>
+              </tr>
+              <tr>
+                <td><strong>사내·파트너 실사용 토큰량</strong></td>
+                <td class="ctr">직전 모델 Argon 대비</td>
+                <td class="ctr">Antigravity 급증 · Perplexity 1,200억+</td>
+                <td class="ctr c-success"><strong>+82% 급증</strong></td>
+                <td>출시 첫날 유료 API 사용량 신기록</td>
+              </tr>
+              <tr>
+                <td><strong>지능·코딩 성능 대 비용</strong> (AA · Epoch AI)</td>
+                <td class="ctr">Carbon high 60점 / $7.76</td>
+                <td class="ctr"><strong>Neon Xhigh 61.55 / CursorBench 65.4%(1위)</strong></td>
+                <td class="ctr c-primary"><strong>비용 1/4.5</strong></td>
+                <td>CursorBench 건당 $10.67 vs Anthropic $48.11</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid-2 prose">
+          <div class="subcard">
+            <h3 class="c-success" style="margin-bottom:6px">구독 급증을 이끌 3대 촉매</h3>
+            <ol>
+              <li><strong>12월 2일 외부 개발 환경(harness) 구독 개방:</strong> 제미나이 구독을 외부 코딩 툴·CLI·에이전트 어디서든 쓰게 열어, 월 $100~$200 Claude Max/Ultra·ChatGPT Pro 코딩 헤비유저 풀을 정면 공략합니다.</li>
+              <li><strong>AI Ultra 재편 + 블랙프라이데이 락인:</strong> AI Ultra를 $249.99 단일에서 <strong>$99.99(5배+20TB+YT프리미엄) / $199.99(20배+30TB+YT가족)</strong>로 낮추고, AI Pro 연 $99.99(월 $8.33)로 이중 구독자를 흡수합니다.</li>
+              <li><strong>12/1·1/1 API 2배 가격 인상의 역풍선 효과:</strong> 종량제 API 단가가 2배 오르면서 헤비 개발자들이 정액제 AI Pro/Ultra 구독으로 넘어오는 유인이 커집니다.</li>
+            </ol>
+          </div>
+          <div class="subcard">
+            <h3 class="c-warning" style="margin-bottom:6px">과도한 낙관을 막는 2대 현실 제약</h3>
+            <ol>
+              <li><strong>낮은 모바일 고착도와 미국 시장 격차:</strong> 제미나이 글로벌 모바일 재방문 고착도(DAU÷MAU)는 <strong>23.3%</strong>로 ChatGPT(44.3%)의 절반, Claude(27.5%)보다 낮습니다. 미국 DAU도 827만으로 ChatGPT(5,365만)의 15% 수준입니다.</li>
+              <li><strong>경쟁사의 동시 반격:</strong> Anthropic은 같은 11월 Claude Fable 5.2(AAII 64.77점 1위)로 DAU를 +14% 끌어올렸고, OpenAI도 GPT-6.2 Astra(62.19점)와 저가 ChatGPT Go($8)로 방어 중입니다.</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>네온 시나리오 (향후 6~12개월 런레이트)</th>
+                <th>신규 유료 구독자 순증 (등급별)</th>
+                <th class="num">신규 증분 ARR</th>
+                <th class="num">네온 후 B2C 총 ARR</th>
+                <th class="num">기존 대비</th>
+                <th class="num">SPD 성장률 리프트</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>보수적</strong> <span class="muted">(개발자 일부 국한)</span></td>
+                <td><strong>+740만 명</strong> (Plus +300만 · Pro +400만 · Ultra +40만)</td>
+                <td class="num">+13.4억 달러</td>
+                <td class="num">60.0억 달러</td>
+                <td class="num">+28.7%</td>
+                <td class="num">+2.3%p</td>
+              </tr>
+              <tr class="hl">
+                <td><strong>기준 (Base)</strong> <span class="muted">(경쟁사 유료층 7~10% 흡수)</span></td>
+                <td><strong>+1,340만 명</strong> (Plus +500만 · Pro +750만 · Ultra +90만)</td>
+                <td class="num c-success">+27.4억 달러</td>
+                <td class="num c-primary">74.0억 달러</td>
+                <td class="num">+58.8%</td>
+                <td class="num">+4.8%p</td>
+              </tr>
+              <tr>
+                <td><strong>낙관적</strong> <span class="muted">(12/2 하네스 개방 대흥행)</span></td>
+                <td><strong>+2,280만 명</strong> (Plus +800만 · Pro +1,300만 · Ultra +180만)</td>
+                <td class="num">+52.5억 달러</td>
+                <td class="num">99.1억 달러</td>
+                <td class="num">+112.7%</td>
+                <td class="num">+9.2%p</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 심층 5: API 3중 교차검증 -->
+      <section id="det-5" class="card stack">
+        <div>
+          <div class="step-label">DETAIL 5 · 3단계 심층 검증</div>
+          <h2>제미나이 자체 API · 기업용 매출 3중 교차 추정 (Triangulation)</h2>
+        </div>
+
+        <div class="prose stack-sm">
+          <h3>경로 A: 공식 "분당 320억 토큰" 바텀업 계산식</h3>
+          <p>
+            구글이 실적발표에서 직접 밝힌 자체 모델 API 토큰 처리량은 <strong>3Q25 70억 → 4Q25 100억 → 1Q26 160억 → 2Q26 220억 → 3Q26 320억 토큰/분</strong>(전년 대비 4.57배)이며, 4분기 목표는 <strong>450억 토큰/분</strong>입니다.
+          </p>
+          <div class="formula-box">
+            • 3Q26 연간 총 토큰: 320억/분 × 525,600분/년 = 16,819조 토큰 (유료 비중 72% 적용 시 12,110조 토큰)<br/>
+            • 3Q26 실효 단가: [저가 Flash군 $0.91(78%) + 고가 Pro군 $2.27(22%)] × 기업·배치 할인 0.75 = $0.91 / 100만 토큰<br/>
+            &nbsp;&nbsp;(입력 83%·출력 17% 비율 및 컨텍스트 캐싱 적중률 55~60%·정가 5~10% 적용 반영)<br/>
+            • 3Q26 API ARR = 12,110조 × $0.91/1M = <strong>110억 달러</strong> (보수 82억 ~ 낙관 145억)<br/>
+            • 4Q26~1Q27 (450억/분·유료 74% = 17,502조 × 12/1·1/1 2배 인상·탄력성 반영 실효 $1.15/1M) = <strong>201억 달러</strong> (154억~277억)
+          </div>
+
+          <h3 style="margin-top:8px">경로 B: 경쟁사(Anthropic · OpenAI) API 매출 × 개발자 대체지표 점유율 역산</h3>
+          <p>
+            Anthropic API(640억) + OpenAI API·기업 소비(270억) 합산 약 800억~910억 달러 대비, 11월 22일 실측 OpenRouter 전체 지출(구글 13.0% = 양사 합산의 24.1%)·npm SDK(19.9%)·PyPI(22.0%) 비중에서 구글의 낮은 단가(출력 $15 vs $40)와 코딩 약세(4.4%)를 보정(0.55~0.75배)하면 <strong>구글 API 매출은 양사 합산의 13%~22%</strong>인 <strong>3Q26 105억~130억 → 인상·네온 후 160억~210억 달러</strong>로 산출됩니다.
+          </p>
+
+          <h3 style="margin-top:8px">경로 C: 구글 클라우드 전체(3Q26 307.1억 달러 = 연율 1,228억 달러) 탑다운 분해</h3>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>구글 클라우드 세부 구성 (3Q26 연율 1,228억 달러 기준)</th>
+                <th class="num">추정 연율 규모</th>
+                <th class="num">비중</th>
+                <th>분해 근거 및 출처</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>① 전통 비(非)AI GCP 클라우드 인프라·데이터·보안</td><td class="num">420억 달러</td><td class="num">34.2%</td><td>기존 300억 달러대 베이스에서 연 ~20% 성장</td></tr>
+              <tr><td>② Google Workspace 전체 (기본 SaaS 128억 + AI 인상 22억)</td><td class="num">150억 달러</td><td class="num">12.2%</td><td>유료 기업 1,000만+ 곳 · 약 1.1억 유료 좌석</td></tr>
+              <tr><td>③ 외부 TPU 하드웨어 직접 판매 (Product 매출, 2Q26 개시)</td><td class="num">120억 달러</td><td class="num">9.8%</td><td>Visible Alpha FY26E 131억 중 4Q26E 87억 → 3Q 약 30억</td></tr>
+              <tr><td>④ 타사 AI 인프라 임대 + 3P 마켓플레이스</td><td class="num">375억 달러</td><td class="num">30.5%</td><td>Anthropic 컴퓨트비(연 ~400억) 중 GCP 몫 ~150~170억 + Meta 100억+ 딜 등</td></tr>
+              <tr><td>⑤ Gemini Enterprise 독립 시트(30억) + 애플 시리(10억)</td><td class="num">40억 달러</td><td class="num">3.3%</td><td>4Q25 800만→3Q26 약 1,800만 시트 × 실효 $14/월 + Apple 연 $10억</td></tr>
+              <tr class="hl"><td>⑥ 남는 잔차 = 순수 1P 제미나이 API / Vertex AI 자체 모델 매출</td><td class="num c-primary">123억 달러</td><td class="num">10.0%</td><td>1,228억 − 1,105억 = 123억 (경로 A 110억 · 경로 B 105~130억과 일치)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 심층 6: 3사 대조 & 구조적 통찰 -->
+      <section id="det-6" class="card stack">
+        <div>
+          <div class="step-label">DETAIL 6 · 3사 최종 대조 &amp; 투자 시사점</div>
+          <h2>구글 vs Anthropic vs OpenAI 정밀 비교와 구조적 차이</h2>
+          <p class="desc">
+            네온·가격인상 효과가 구글에 반영되는 6~12개월 동안 경쟁사들도 함께 성장합니다. 따라서 <strong>동일 시점 정적 비교</strong>와 <strong>향후 동적 비교</strong>를 구분해서 보아야 착시가 없습니다.
+          </p>
+        </div>
+
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>비교 항목</th>
+                <th class="ctr">Google (제미나이 순수 모델)</th>
+                <th class="ctr">Anthropic (Claude)</th>
+                <th class="ctr">OpenAI (ChatGPT · API)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="hl">
+                <td>현재 ARR (2026년 3Q~10월 스냅샷)</td>
+                <td class="ctr c-primary">약 219억 달러 (엄격 180억)</td>
+                <td class="ctr">810억 달러 (10월 말 실측)</td>
+                <td class="ctr">500억 달러 (순매출 / 총액 680~700억)</td>
+              </tr>
+              <tr>
+                <td>↳ 구독 매출 (개인+기업 시트)</td>
+                <td class="ctr">99억 달러 (B2C 47 + B2B 52)</td>
+                <td class="ctr">170억 달러 (21%, S-1)</td>
+                <td class="ctr">약 220억 달러 (~44%, 유료 5,000만+)</td>
+              </tr>
+              <tr>
+                <td>↳ API·소비 기반 매출 (+라이선스)</td>
+                <td class="ctr">120억 달러 (API 110 + 시리 10)</td>
+                <td class="ctr">640억 달러 (79%, S-1)</td>
+                <td class="ctr">약 270억 달러 (+광고 10억)</td>
+              </tr>
+              <tr>
+                <td>3사 합산(1,529억) 내 현재 점유율</td>
+                <td class="ctr"><strong>14.3%</strong> (엄격 12.1%)</td>
+                <td class="ctr"><strong>53.0%</strong> (1위)</td>
+                <td class="ctr"><strong>32.7%</strong> (2위)</td>
+              </tr>
+              <tr>
+                <td>향후 6~12개월 동적 ARR 전망</td>
+                <td class="ctr"><strong>약 347억 달러</strong> (274억~459억)</td>
+                <td class="ctr muted">추세 연장 시 1,000억~1,200억+</td>
+                <td class="ctr muted">추세 연장 시 700억~850억+</td>
+              </tr>
+              <tr>
+                <td>모바일 DAU (2026.11.18~24)</td>
+                <td class="ctr">글로벌 1.68억 / <strong>미국 827만</strong></td>
+                <td class="ctr">글로벌 4,112만 / <strong>미국 746만</strong></td>
+                <td class="ctr">글로벌 7.23억 / <strong>미국 5,365만</strong></td>
+              </tr>
+              <tr>
+                <td>모바일 단골률 (DAU ÷ MAU)</td>
+                <td class="ctr">23.3%</td>
+                <td class="ctr">27.5%</td>
+                <td class="ctr"><strong>44.3%</strong></td>
+              </tr>
+              <tr>
+                <td>OpenRouter 지출 (전체 / 코딩)</td>
+                <td class="ctr"><strong>13.0%</strong> / 4.4%</td>
+                <td class="ctr"><strong>39.8%</strong> / <strong>43.1%</strong></td>
+                <td class="ctr">14.2% / 14.6%</td>
+              </tr>
+              <tr>
+                <td>플래그십 지능(AAII) / 출력 단가</td>
+                <td class="ctr"><strong>61.55점 / $15</strong> (최고 가성비)</td>
+                <td class="ctr"><strong>64.77점 / $40</strong></td>
+                <td class="ctr"><strong>62.19점 / $40</strong></td>
+              </tr>
+              <tr>
+                <td>CursorBench 코딩 / 작업당 비용</td>
+                <td class="ctr"><strong>65.4% (1위) / $10.67</strong></td>
+                <td class="ctr">61.3% / $48.11</td>
+                <td class="ctr">40.9% / $7.60</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid-2 prose">
+          <div class="subcard">
+            <h3 style="margin-bottom:6px">왜 구글 직접 모델 매출이 3위인가?</h3>
+            <ul>
+              <li><strong>저단가 박리다매:</strong> 자체 TPU v7 원가 우위($0.18/1M vs B200 $0.31/1M)로 경쟁사의 1/2~1/3 가격에 팔아 같은 토큰을 처리해도 찍히는 매출액이 작습니다.</li>
+              <li><strong>코딩 에이전트 후발주자:</strong> Anthropic 폭주의 엔진인 코딩 CLI(317만/일)·코딩 지출(43.1%)에서 구글(8만/일·4.4%)이 뒤처져 있었고, 이를 뒤집기 위해 네온 + 12/2 외부 하네스 개방을 꺼냈습니다.</li>
+              <li><strong>소비자 트래픽의 질적 차이:</strong> 안드로이드 기본 탑재·신흥국 비중이 커서 미국 DAU와 고착도 격차가 존재합니다.</li>
+            </ul>
+          </div>
+          <div class="subcard">
+            <h3 style="margin-bottom:6px">모델 매출 바깥의 거대한 3중 안전판</h3>
+            <ul>
+              <li><strong>본업 광고 수익화:</strong> AI Mode·AI Overviews로 검색 유료 클릭(+8%)과 CPC(+4%)를 방어하는 간접 AI 광고 증가분(외부 추정 연 약 386억 달러)은 위 표에 포함되지 않았습니다.</li>
+              <li><strong>경쟁사가 내는 통행세:</strong> Anthropic(컴퓨트비 매출의 58%)의 핵심 인프라 공급자(약정 1,110억)이며, 외부 TPU 판매(VA 컨센 26년 131억→27년 749억→28년 1,420억)도 본격화 중입니다.</li>
+              <li><strong>Anthropic 지분 가치:</strong> 알파벳 보유 비상장 투자 지분(약 1,352억 달러, 대부분 Anthropic 추정)으로 경쟁사 성장이 자산 가치로 환류됩니다.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 심층 7: 4대 검증 지표 -->
+      <section id="det-7" class="card stack-sm">
+        <div class="step-label">DETAIL 7 · 사후 검증 체크리스트</div>
+        <h2>향후 2개 분기(4Q26~1Q27) 추정의 적중 여부를 가를 4대 지표</h2>
+        <div class="prose">
+          <ol>
+            <li><strong>12월 1일·1월 1일 API 2배 가격 인상 후 물량 방어:</strong> Carbon/Argon($2/$10→$4/$20)과 3.8 Flash 가격 인상 직후에도 OpenRouter 구글 요청 점유율 <strong>15% 이상</strong>, npm 일평균 다운로드 <strong>400만 회 이상</strong>을 지키면 API 연 200억 달러 안착이 유력합니다.</li>
+            <li><strong>12월 2일 외부 개발 환경 구독 개방 후 코딩 지표:</strong> OpenRouter 코딩 지출 점유율(현재 4.4%)이 <strong>10%+</strong>로 치솟고 개발자 AI Ultra 전환이 확인되면 B2C 상방(99억 달러)이 열립니다.</li>
+            <li><strong>미국 모바일 DAU와 고착도 돌파:</strong> 미국 Gemini DAU가 827만에서 <strong>1,000만 명 이상</strong>, 글로벌 고착도가 23.3%에서 <strong>27%+</strong>로 올라서야 대중 구독 전환율이 ChatGPT급에 근접합니다.</li>
+            <li><strong>2027년 2월 초 4분기 실적발표 확정 숫자:</strong> ① 분당 API 토큰 <strong>450억 돌파</strong>, ② SPD 성장률 <strong>11.0% 바닥 탈출 후 13~15% 반등</strong>, ③ 전체 유료 구독자 <strong>4억 명(400M) 돌파</strong> 여부를 확인하면 본 추정 모델의 정확도를 바로 검증할 수 있습니다.</li>
+          </ol>
+        </div>
+        <div style="text-align:center;padding-top:8px">
+          <button id="jump-to-easy" class="theme-btn" style="padding:8px 16px;font-size:13px" type="button">← 쉬운 차트·시뮬레이터 탭으로 돌아가기</button>
+        </div>
+      </section>
+    </div>
 
     <footer class="footer">
       자료 출처: Alphabet SEC 공시(10-K/10-Q/8-K) · Sensor Tower · OpenRouter · npm Registry · Visible Alpha 컨센서스 · Anthropic S-1 · OpenAI 3분기 업데이트 · Epoch AI · Artificial Analysis<br/>
@@ -663,6 +1406,37 @@
       const isDark = document.documentElement.classList.toggle('dark');
       themeBtn.textContent = isDark ? '라이트 모드로 보기' : '다크 모드로 보기';
     });
+
+    // 메인 2개 탭 전환 (URL 해시 #detail / #easy 연동)
+    const tabEasy = document.getElementById('tab-easy');
+    const tabDetail = document.getElementById('tab-detail');
+    const panelEasy = document.getElementById('panel-easy');
+    const panelDetail = document.getElementById('panel-detail');
+
+    function switchMainTab(which, scrollTop) {
+      const isDetail = which === 'detail';
+      tabEasy.setAttribute('aria-selected', isDetail ? 'false' : 'true');
+      tabDetail.setAttribute('aria-selected', isDetail ? 'true' : 'false');
+      panelEasy.hidden = isDetail;
+      panelDetail.hidden = !isDetail;
+      if (history.replaceState) {
+        history.replaceState(null, '', isDetail ? '#detail' : '#easy');
+      }
+      if (scrollTop) {
+        const bar = document.getElementById('mode-bar');
+        const y = bar.getBoundingClientRect().top + window.scrollY - 12;
+        window.scrollTo({ top: Math.max(0, y), behavior: 'smooth' });
+      }
+    }
+
+    tabEasy.addEventListener('click', () => switchMainTab('easy', false));
+    tabDetail.addEventListener('click', () => switchMainTab('detail', false));
+    document.getElementById('jump-to-detail').addEventListener('click', () => switchMainTab('detail', true));
+    document.getElementById('jump-to-easy').addEventListener('click', () => switchMainTab('easy', true));
+
+    if (window.location.hash === '#detail' || window.location.hash.startsWith('#det-')) {
+      switchMainTab('detail', false);
+    }
 
     // 툴팁 헬퍼 (마우스 + 모바일 터치 대응)
     const tip = document.getElementById('tooltip');
